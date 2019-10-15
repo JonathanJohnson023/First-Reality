@@ -1,0 +1,2 @@
+import FirstReality from './game';
+

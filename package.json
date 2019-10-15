@@ -1,0 +1,14 @@
+{
+  "name": "first-reality",
+  "version": "1.0.0",
+  "description": "Final Fantasy inspired game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonathan Johnson",
+  "license": "ISC",
+  "dependencies": {
+    "webpack": "^4.41.2"
+  }
+}
