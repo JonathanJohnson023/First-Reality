@@ -1,0 +1,98 @@
+#title-center-box{
+  position: absolute;
+	margin: 0px 0px 0px 830px;
+	z-index: 3;	
+}
+
+#menu{
+	position: absolute;
+	padding: 10px 0px 10px 40px;
+	width: 250px;
+	list-style: none;
+	background: radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+    background: -moz-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+	 background: -webkit-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+	 background: -o-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+	border: 5px solid;
+	border-radius: 15px;
+	 -moz-border-radius: 15px;
+	 -webkit-border-radius: 15px;
+	box-sizing: border-box;     
+	 -moz-box-sizing: border-box;
+	 -webkit-box-sizing: border-box;
+	animation-name: movingDown;
+	 animation-duration: 0.5s;
+	 animation-timing-function: ease;		  	  
+}
+
+@keyframes movingUp{
+	0%{
+	  transform: translate(0px,3900px);
+	}
+
+	100%{
+	  transform: translate(0px,0px);
+	}
+}
+
+@keyframes movingDown{
+	0%{
+	  transform: translate(0px,-8000px);
+	}
+
+	100%{
+	  transform: translate(0px,0px);
+	}
+}
+
+#menu li {
+	line-height:40px;
+	width: fit-content;
+	color: white;
+}
+
+#menu li:hover{
+	cursor: none;
+}
+
+.selected{
+	position: absolute;
+	margin: 12px 0px 0px -75px;
+	z-index: 1;
+}
+
+.shadow{
+	display: block;
+	width: 1px; 
+	height: 1px; 
+	overflow: hidden;
+	position: absolute;
+	opacity: 0.5;
+	box-shadow: 
+	-68px 50px 2px 1px black,-67px 50px 2px 1px black,-66px 50px 2px 1px black,-65px 50px 2px 1px black,-64px 50px 2px 1px black, 
+	-63px 50px 2px 1px black,-62px 50px 2px 1px black,-61px 50px 2px 1px black,-60px 50px 2px 1px black,-59px 50px 2px 1px black,
+	-58px 50px 2px 1px black,-57px 50px 2px 1px black,-56px 50px 2px 1px black,-55px 50px 2px 1px black,-54px 50px 2px 1px black,
+	-53px 50px 2px 1px black,-52px 50px 2px 1px black,-51px 50px 2px 1px black,-50px 50px 2px 1px black,-49px 50px 2px 1px black,
+	-50px 50px 2px 1px black,-47px 50px 2px 1px black,-46px 50px 2px 1px black,-45px 50px 2px 1px black,-44px 50px 2px 1px black,
+	-43px 50px 2px 1px black,-42px 50px 2px 1px black,-41px 50px 2px 1px black,-40px 50px 2px 1px black,-39px 50px 2px 1px black,
+	-38px 50px 2px 1px black,-37px 50px 2px 1px black,-36px 50px 2px 1px black,-35px 50px 2px 1px black,-34px 50px 2px 1px black,
+	-33px 50px 2px 1px black,-32px 50px 2px 1px black,-31px 50px 2px 1px black,-30px 50px 2px 1px black,-29px 50px 2px 1px black,
+	-28px 50px 2px 1px black,-27px 50px 2px 1px black,-26px 50px 2px 1px black,-25px 50px 2px 1px black,-24px 50px 2px 1px black,
+	-23px 50px 2px 1px black,-22px 50px 2px 1px black,
+
+  	-64px 47px 2px 1px black,-63px 47px 2px 1px black,-62px 47px 2px 1px black,-61px 47px 2px 1px black,-60px 47px 2px 1px black,
+  	-59px 47px 2px 1px black,-58px 47px 2px 1px black,-57px 47px 2px 1px black,-56px 47px 2px 1px black,-55px 47px 2px 1px black,
+  	-54px 47px 2px 1px black,-53px 47px 2px 1px black,-52px 47px 2px 1px black,-51px 47px 2px 1px black,-50px 47px 2px 1px black,
+ 	-49px 47px 2px 1px black,-48px 47px 2px 1px black,-47px 47px 2px 1px black,-46px 47px 2px 1px black,-45px 47px 2px 1px black,
+  	-44px 47px 2px 1px black,-43px 47px 2px 1px black,-42px 47px 2px 1px black,-41px 47px 2px 1px black,-40px 47px 2px 1px black,
+
+  	-61px 44px 2px 1px black,-60px 44px 2px 1px black,-49px 44px 2px 1px black,-51px 44px 2px 1px black,-50px 44px 2px 1px black, 
+  
+    -64px 53px 2px 1px black,-63px 53px 2px 1px black,-62px 53px 2px 1px black,-61px 53px 2px 1px black,-60px 53px 2px 1px black, 
+  	-59px 53px 2px 1px black,-58px 53px 2px 1px black,-57px 53px 2px 1px black,-56px 53px 2px 1px black,-55px 53px 2px 1px black, 
+  	-54px 53px 2px 1px black,-53px 53px 2px 1px black,-52px 53px 2px 1px black,-51px 53px 2px 1px black,-50px 53px 2px 1px black,
+	-49px 53px 2px 1px black,-48px 53px 2px 1px black,-47px 53px 2px 1px black,-46px 53px 2px 1px black,-45px 53px 2px 1px black,
+	-44px 53px 2px 1px black,-43px 53px 2px 1px black,-42px 53px 2px 1px black,-41px 53px 2px 1px black,-40px 53px 2px 1px black
+	;
+}
+
