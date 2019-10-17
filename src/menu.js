@@ -1,13 +1,17 @@
 export default class Menu {
   constructor(){
     this.tokenMenu = 0
+
     this.cursor = document.createElement('img');
       this.cursor.className = 'selected';
       this.cursor.src = 'https://www.dropbox.com/s/1pq4d1ksjv3tuoz/FF7Cursor.png?raw=1';
+
     this.divShadow = document.createElement('div'); //shadow of the hand cursor.
       this.divShadow.className = 'shadow';
+
     this.cursorMove = new Audio(); //move sound.
       this.cursorMove.src ="https://www.dropbox.com/s/fiyx4q2mdwynraj/FF7CursorMove.mp3?raw=1";
+      
     this.menuItems = document.querySelectorAll('#menu li');
 
 

@@ -1,11 +1,72 @@
+.none{
+	display: none !important;
+}
+
+.title-screen-disappear{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: red;
+	width: 100%;
+	height: 98vh;
+	opacity: 0;
+	/* background-color: black; */
+	animation-name: disappearing;
+	 animation-delay: 0s;
+	 animation-duration: 1.5s;
+	 animation-timing-function: linear;
+	 animation-fill-mode: none;	
+	 z-index:4;
+}
+.main-title-screen-appearing{
+	user-select: none;
+	animation-name: appearing3;
+	 animation-delay: 0s;
+	 animation-duration: 2s;
+	 animation-timing-function: linear;
+	 animation-fill-mode: none;	
+	 z-index:4;
+}
+.title-screen-appearing{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: red;
+	width: 100%;
+	height: 98vh;
+	animation-name: appearing3;
+	 animation-delay: 0s;
+	 animation-duration: 2s;
+	 animation-timing-function: linear;
+	 animation-fill-mode: none;	
+	 z-index:4;
+}
+.title-logo{
+	position: absolute;
+	font-size: 60px;
+	font-family: "Final Fantasy";
+	white-space: nowrap;
+	left: 39%;
+	top: 25%;
+}
+#title-screen-menu{
+	display: flex;
+	justify-content: center;
+}
+#press-start > h1{
+	font-size: 26px;
+	position: relative;
+	top: 100px;
+}
 #title-center-box{
   position: absolute;
-	margin: 0px 0px 0px 830px;
-	z-index: 3;	
+	margin: auto;
+	z-index: 3;
+	bottom: 250px;
 }
 
 #menu{
-	position: absolute;
+	/* position: absolute; */
 	padding: 10px 0px 10px 40px;
 	width: 250px;
 	list-style: none;
@@ -20,9 +81,19 @@
 	box-sizing: border-box;     
 	 -moz-box-sizing: border-box;
 	 -webkit-box-sizing: border-box;
-	animation-name: movingDown;
+	animation-name: movingUp;
 	 animation-duration: 0.5s;
 	 animation-timing-function: ease;		  	  
+}
+
+#menu li {
+	line-height:40px;
+	width: fit-content;
+	color: white;
+}
+
+#menu li:hover{
+	cursor: none;
 }
 
 @keyframes movingUp{
@@ -45,14 +116,81 @@
 	}
 }
 
-#menu li {
-	line-height:40px;
-	width: fit-content;
-	color: white;
+@keyframes falling{
+	0%{
+		transform: translate(0px, 0px);
+	  }
+
+	30%{
+		transform: translate(0px, 91px);
+	}
+
+	56%{
+		transform: translate(0px, 109px);
+	}
+
+	74%{
+		transform: translate(0px, 123px);
+	}
+
+	86%{
+		transform: translate(0px, 133px);
+	}
+
+	98%{
+		transform: translate(0px, 140px);
+	}
+
+	10%,44%,64%,80%,92%,100%{
+	   transform: translate(0px, 145px);
+	}
+	  
 }
 
-#menu li:hover{
-	cursor: none;
+@keyframes appearing{
+	25%{
+		text-shadow: 0px 0px 0px black;
+	}
+	
+	50%{
+		color:white;
+		text-shadow: 0px 0px 5px white, 0px 0px 10px white,0px 0px 15px white,
+		0px 0px 20px white,0px 0px 25px white;
+	}
+	
+	100%{
+		color:white;
+	}
+}
+
+@keyframes appearing2{
+	8%{
+		opacity: 0;
+	}
+	
+	100%{
+		opacity: 1;
+	}
+}
+
+@keyframes appearing3{
+	0% {
+		opacity: 0;
+	}
+	
+	100%{
+		opacity: 1;
+	}
+}
+
+@keyframes disappearing{
+	0%,40% {
+		opacity: 1;
+	}
+	
+	100%{
+		opacity: 0;
+	}
 }
 
 .selected{
@@ -95,4 +233,3 @@
 	-44px 53px 2px 1px black,-43px 53px 2px 1px black,-42px 53px 2px 1px black,-41px 53px 2px 1px black,-40px 53px 2px 1px black
 	;
 }
-
