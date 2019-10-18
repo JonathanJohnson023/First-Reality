@@ -1,25 +1,28 @@
 import Menu from "./menu";
 
+
 document.addEventListener("DOMContentLoaded", () => {
-  let titleScreenBool = true
-  const menuClass = new Menu()
-  menuClass.selection(0);
+  const menuClass = new Menu('#menu li')
   const menu = document.getElementById("menu")
-  menu.addEventListener('mouseover', menuClass.selectMouseOver)
-  document.addEventListener('keydown', menuClass.keyPressed)
+  let i = 0
+  let titleScreenBool = true
+  menuClass.selection(0);
 
   if(titleScreenBool){
     let titleScreen = document.getElementById("press-start")
     console.log("remounted")
     titleScreenBool = false
-    document.body.addEventListener('click', function(){
-      titleScreen.classList.remove("title-screen-appearing");      
-      titleScreen.classList.add("title-screen-disappear");
+    document.body.addEventListener('keydown', function(e){
+      if(e.keyCode == 13){
+        titleScreen.classList.remove("title-screen-appearing");      
+        titleScreen.classList.add("title-screen-disappear");
+        menu.addEventListener('mouseover', menuClass.selectMouseOver)
+        document.addEventListener('keydown', menuClass.keyPressed)
+      }
     });
-    let i = 0
     titleScreen.addEventListener("animationend", function(){
       i += 1
-      if(i === 1) return 
+      if(i === 1){ return }
       document.getElementById("title-screen-controller").classList.add("none");
       document.getElementById("title-screen-menu").classList.remove("none");
       document.getElementById("title-audio").play();

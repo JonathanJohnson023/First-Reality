@@ -1,5 +1,5 @@
 export default class Menu {
-  constructor(){
+  constructor(querySelec){
     this.tokenMenu = 0
 
     this.cursor = document.createElement('img');
@@ -12,8 +12,10 @@ export default class Menu {
     this.cursorMove = new Audio(); //move sound.
       this.cursorMove.src ="https://www.dropbox.com/s/fiyx4q2mdwynraj/FF7CursorMove.mp3?raw=1";
       
-    this.menuItems = document.querySelectorAll('#menu li');
+    this.cursorSelect = new Audio();
+      this.cursorSelect.src = 'https://www.dropbox.com/s/v04ewrevpnnsz03/FF7CursorSaveLoad.mp3?raw=1';
 
+    this.menuItems = document.querySelectorAll(`${querySelec}`);
 
     this.selectMouseOver = this.selectMouseOver.bind(this);
     this.keyPressed = this.keyPressed.bind(this);
@@ -39,12 +41,19 @@ export default class Menu {
       this.tokenMenu < 1 ? this.tokenMenu +=1 : this.tokenMenu = 0
       this.selection(this.tokenMenu);
       this.cursorMove.play();
+    } else if(e.keyCode == 13){
+      this.cursorSelect.play();
+      this.select(this.tokenMenu);
     }
   }
 
   selection(tokenMenu){
     this.menuItems[tokenMenu].prepend(this.cursor); //Prepend element before the selected target.
     this.menuItems[tokenMenu].prepend(this.divShadow); 
+  }
+
+  select(selectedNumber){
+    this.menuItems[selectedNumber]
   }
 
 }

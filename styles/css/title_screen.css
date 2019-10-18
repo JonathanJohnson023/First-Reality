@@ -43,20 +43,22 @@
 }
 .title-logo{
 	position: absolute;
-	font-size: 60px;
+	font-size: 120px;
 	font-family: "Final Fantasy";
 	white-space: nowrap;
-	left: 39%;
+	left: 50%;
 	top: 25%;
+	margin-left: -433px;
 }
 #title-screen-menu{
 	display: flex;
 	justify-content: center;
 }
 #press-start > h1{
-	font-size: 26px;
+	font-size: 42px;
 	position: relative;
 	top: 100px;
+	color: red;
 }
 #title-center-box{
   position: absolute;
@@ -90,6 +92,8 @@
 	line-height:40px;
 	width: fit-content;
 	color: white;
+	font-size: 30px;
+	padding: 8px 0;
 }
 
 #menu li:hover{
