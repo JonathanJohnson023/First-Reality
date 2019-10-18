@@ -18,7 +18,7 @@
 	 animation-fill-mode: none;	
 	 z-index:4;
 }
-.main-title-screen-appearing{
+.main-title-screen.appearing{
 	user-select: none;
 	animation-name: appearing3;
 	 animation-delay: 0s;
@@ -26,6 +26,14 @@
 	 animation-timing-function: linear;
 	 animation-fill-mode: none;	
 	 z-index:4;
+}
+.disappearing{
+	animation-name: disappearing;
+		animation-delay: 0s;
+		animation-duration: 2.5s;
+		animation-timing-function: linear;
+		animation-fill-mode: none;	
+		z-index:4;
 }
 .title-screen-appearing{
 	display: flex;

@@ -1,9 +1,12 @@
-
+import Menu from "./menu"
 export default class GameRouter {
-  constructor(menu,game,tutorial){  
+  constructor(menu,game,tutorial,canvas){  
     this.menu = menu;
     this.game = game;
     this.tutorial = tutorial;
+    this.ctx = canvas.getContext("2d");
+    this.lastTime = 0;
+    this.title = document.getElementById("title-screen-text-wrapper")
   }
 
 
@@ -11,8 +14,8 @@ export default class GameRouter {
     const menu = document.getElementById("menu")
     menu.addEventListener('mouseover', this.menu.selectMouseOver)
     menu.addEventListener('click', (e) => { this.selectEventCallback(e) })
-
     document.addEventListener('keydown', (e) => { this.selectEventCallback(e) })
+
   }
 
   selectEventCallback(e){
@@ -27,13 +30,35 @@ export default class GameRouter {
 
   select(selection){
     if (selection.innerText === "Start Game" ) {
-      this.game.start()
+      const titleAudio = document.getElementById("title-audio")
+      this.title.classList.remove("appearing");
+      this.title.classList.add("disappearing");
+      titleAudio.volume = 0.3
+      
+      this.title.addEventListener("animationend", () => {
+        this.title.classList.add("none");
+        titleAudio.pause();      
+        document.getElementById("battleView").classList.remove("none");
+      }, {once: true})
+
+      requestAnimationFrame(this.gameAnimate.bind(this));
 
     }else if(selection.innerText === "How To Play"){ 
-      this.tutorial.start()
+      const menu = new Menu("")
+      this.tutorial.start(menu)
     }
-
   }
+
+  gameAnimate(time) {
+    // const timeDelta = time - this.lastTime;
+
+    // this.game.step(timeDelta);
+    this.game.draw(this.ctx);
+    this.lastTime = time;
+
+    // every call to animate requests causes another call to animate
+    requestAnimationFrame(this.gameAnimate.bind(this));
+  };
 
 
 }

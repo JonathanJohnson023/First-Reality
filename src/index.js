@@ -8,8 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuClass = new Menu('#menu li')
   const theGame = new Game
   const tutorial = new Instructions
-  const gameRouter = new GameView(menuClass, theGame, tutorial)
-  // const menu = document.getElementById("menu")
+  const canvas = document.getElementById("battle-view");
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const gameRouter = new GameView(menuClass, theGame, tutorial, canvas)
+
   let i = 0
   let titleScreenBool = true
   menuClass.selection(0);
@@ -23,8 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
         titleScreen.classList.remove("title-screen-appearing");
         menuClass.cursorSelect.play()
         titleScreen.classList.add("title-screen-disappear");
-        // menu.addEventListener('mouseover', menuClass.selectMouseOver)
-        // document.addEventListener('keydown', menuClass.keyPressed)
       }
     });
     titleScreen.addEventListener("animationend", function(){
