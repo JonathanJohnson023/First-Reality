@@ -19,6 +19,7 @@ export default class Menu {
 
     this.selectMouseOver = this.selectMouseOver.bind(this);
     this.keyPressed = this.keyPressed.bind(this);
+    this.selectMouseClick = this.selectMouseClick.bind(this);
 
   }
 
@@ -28,6 +29,15 @@ export default class Menu {
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);
       this.cursorMove.play();
+    }
+  }
+
+  selectMouseClick(e){
+    e.preventDefault();
+    if(e.target.parentNode.id == 'menu'){
+      this.tokenMenu = parseInt(e.target.getAttribute("number"));
+      this.cursorSelect.play();
+      return this.menuItems[this.tokenMenu]
     }
   }
 
@@ -43,7 +53,7 @@ export default class Menu {
       this.cursorMove.play();
     } else if(e.keyCode == 13){
       this.cursorSelect.play();
-      this.select(this.tokenMenu);
+      return this.menuItems[this.tokenMenu]
     }
   }
 
@@ -53,7 +63,7 @@ export default class Menu {
   }
 
   select(selectedNumber){
-    this.menuItems[selectedNumber]
+    return this.menuItems[selectedNumber]
   }
 
 }
