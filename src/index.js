@@ -6,9 +6,9 @@ import GameView from "./game_view"
 
 document.addEventListener("DOMContentLoaded", () => {
   const menuClass = new Menu('#menu li')
-  const theGame = new Game
   const tutorial = new Instructions
   const canvas = document.getElementById("battle-view");
+  const theGame = new Game(canvas)
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
   const gameRouter = new GameView(menuClass, theGame, tutorial, canvas)

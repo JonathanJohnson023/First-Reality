@@ -40,7 +40,7 @@ export default class GameRouter {
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
       }, {once: true})
-
+      this.game.start();
       requestAnimationFrame(this.gameAnimate.bind(this));
 
     }else if(selection.innerText === "How To Play"){ 
