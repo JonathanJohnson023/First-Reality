@@ -30,7 +30,7 @@ export default class Game {
   
   drawBackground(ctx){
     const background = new Image()
-      background.src = "../assets/images/battle_backgrounds.png"
+      background.src = "battle_backgrounds.png"
     ctx.drawImage(background, 522, 5, 270, 155, 0, 0, ctx.width, ctx.height)
 
   } 
