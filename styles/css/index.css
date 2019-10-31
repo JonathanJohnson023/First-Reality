@@ -22,7 +22,8 @@ time, mark, audio, video {
   box-sizing: border-box;
 }
 
- body {
+body {
   overflow-y: hidden;
   margin: 0;
 }
+

@@ -18,6 +18,9 @@
 	 animation-fill-mode: none;	
 	 z-index:4;
 }
+#title-screen-text-wrapper{
+	background: white;
+}
 .main-title-screen.appearing{
 	user-select: none;
 	animation-name: appearing3;

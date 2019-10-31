@@ -4,6 +4,7 @@ export default class Game {
     this.party = []
     this.enemies = [];
     this.wave = 0;
+    this.currentChar = null;
     this.ctx = ctx;
     
     this.draw = this.draw.bind(this);
@@ -11,11 +12,11 @@ export default class Game {
 
 
   draw(ctx){
-    console.log("it be a drawing")
-    ctx.clearRect(0, 0, ctx.width, ctx.height);
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(0, 0, ctx.width, ctx.height);
-    this.drawSprites(ctx)
+    this.drawBackground(ctx);
+    this.drawSprites(ctx);
+    document.body.addEventListener("animationend" , () => {
+      document.body.style.backgroundColor = "black";
+    })
   }
 
   start(){
@@ -26,13 +27,22 @@ export default class Game {
     const wizard = new Sprite("wizard", this.ctx);
     this.party.push(knight, cleric, archer, wizard);
   }
+  
+  drawBackground(ctx){
+    const background = new Image()
+      background.src = "../assets/images/battle_backgrounds.png"
+    ctx.drawImage(background, 522, 5, 270, 155, 0, 0, ctx.width, ctx.height)
+
+  } 
 
   drawSprites(ctx){
+    let current = this.currentChar
     this.party.forEach((obj, index) => {
+
       let sprite = new Image();
       sprite.src = `../assets/images/image${index}.png`;
-      let cord = obj.draw(index);
-      ctx.drawImage(sprite, ...cord , 100, 100 )
+      let cord = current === index ? obj.draw(index, true) : obj.draw(index);
+      ctx.drawImage(sprite, ...cord , 125, 125 )
     })
   }
 

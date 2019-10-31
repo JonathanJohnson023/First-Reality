@@ -5,6 +5,7 @@ export default class GameRouter {
     this.game = game;
     this.tutorial = tutorial;
     this.ctx = canvas.getContext("2d");
+    this.menuCtx = canvas.getContext("2d")
     this.lastTime = 0;
     this.title = document.getElementById("title-screen-text-wrapper")
   }
@@ -19,6 +20,7 @@ export default class GameRouter {
   }
 
   selectEventCallback(e){
+    const menu = document.getElementById("menu")
     if(e.keyCode == 13 && !menu.classList.contains("none")){
       this.select(this.menu.keyPressed(e))
     }else if(e.type == "click"){
@@ -51,7 +53,11 @@ export default class GameRouter {
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
-
+    this.ctx.width  = window.innerWidth;
+    this.ctx.height = window.innerHeight;
+    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
     // this.game.step(timeDelta);
     this.game.draw(this.ctx);
     this.lastTime = time;

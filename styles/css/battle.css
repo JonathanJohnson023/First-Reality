@@ -1,0 +1,56 @@
+#battleView{
+  object-fit: contain;
+  background: black;
+}
+
+#battle-view{
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  padding: 0;
+  margin: auto;
+  display: block;
+  background: black;
+}
+#battle-menu{
+  bottom: 30px;
+  position: absolute;
+  padding: 0;
+  margin: auto;
+  display: block;
+  left: 0;
+  right: 0;
+}
+#battle-menu{
+	/* position: absolute; */
+	padding: 10px 0px 10px 40px;
+	/* width: 250px; */
+	list-style: none;
+	background: radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
+    background: -moz-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
+	 background: -webkit-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
+	 background: -o-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
+	border: 5px solid;
+	border-radius: 15px;
+	 -moz-border-radius: 15px;
+	 -webkit-border-radius: 15px;
+	box-sizing: border-box;     
+	 -moz-box-sizing: border-box;
+	 -webkit-box-sizing: border-box;
+	animation-name: movingUp;
+	 animation-duration: 0.5s;
+	 animation-timing-function: ease;		  	  
+}
+
+#battle-menu li {
+	line-height:40px;
+	width: fit-content;
+	color: white;
+	font-size: 30px;
+	padding: 8px 0;
+}
+
+#battle-menu li:hover{
+	cursor: none;
+}
