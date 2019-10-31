@@ -187,7 +187,7 @@ class Game {
     const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("archer", this.ctx);
     const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("wizard", this.ctx);
     this.party.push(knight, cleric, archer, wizard);
-  }
+  } 
   
   drawBackground(ctx){
     const background = new Image()

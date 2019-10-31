@@ -25,7 +25,7 @@ export default class Game {
     const archer = new Sprite("archer", this.ctx);
     const wizard = new Sprite("wizard", this.ctx);
     this.party.push(knight, cleric, archer, wizard);
-  }
+  } 
   
   drawBackground(ctx){
     const background = new Image()
