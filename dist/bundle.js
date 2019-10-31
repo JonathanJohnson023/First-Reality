@@ -172,7 +172,6 @@ class Game {
     this.draw = this.draw.bind(this);
   }
 
-
   draw(ctx){
     this.drawBackground(ctx);
     this.drawSprites(ctx);
@@ -192,7 +191,7 @@ class Game {
   
   drawBackground(ctx){
     const background = new Image()
-      background.src = "battle_backgrounds.png" 
+      background.src = "battle_backgrounds.png"
     ctx.drawImage(background, 522, 5, 270, 155, 0, 0, ctx.width, ctx.height)
 
   } 
@@ -202,7 +201,7 @@ class Game {
     this.party.forEach((obj, index) => {
 
       let sprite = new Image();
-      sprite.src = `../assets/images/image${index}.png`;
+      sprite.src = `image${index}.png`;
       let cord = current === index ? obj.draw(index, true) : obj.draw(index);
       ctx.drawImage(sprite, ...cord , 125, 125 )
     })
