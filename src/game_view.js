@@ -45,7 +45,7 @@ export default class GameRouter {
       this.game.start();
       requestAnimationFrame(this.gameAnimate.bind(this));
 
-    }else if(selection.innerText === "How To Play"){ 
+    }else if(selection.innerText === "How To Play"){
       const menu = new Menu("")
       this.tutorial.start(menu)
     }

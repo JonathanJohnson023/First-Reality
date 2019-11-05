@@ -14,12 +14,8 @@ export default class Character {
       return this.walkForward(index)
     }else if(this.job === "knight"){
       return [0, 0, 48, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else if(this.job === "cleric"){
-      return [0, 0, 47, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else if(this.job === "archer"){
+    }else {
       return [0, 0, 64, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else if(this.job === "wizard"){
-      return [0, 0, 42, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
     }
   }
 
@@ -27,12 +23,8 @@ export default class Character {
     let heightFloat = this.spriteHeight(index)
     if(this.job === "knight"){
       return [48, 0, 48, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else if(this.job === "cleric"){
-      return [0, 0, 47* 2, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else if(this.job === "archer"){
+    }else {
       return [0, 0, 64* 2, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else if(this.job === "wizard"){
-      return [0, 0, 42 * 2, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
     }
   }
 
