@@ -32,7 +32,7 @@ export default class Game {
       background.src = "battle_backgrounds.png"
     ctx.drawImage(background, 522, 5, 270, 155, 0, 0, ctx.width, ctx.height)
 
-  } 
+  }
 
   drawSprites(ctx){
     let current = this.currentChar
