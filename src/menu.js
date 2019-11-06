@@ -11,9 +11,11 @@ export default class Menu {
 
     this.cursorMove = new Audio(); //move sound.
       this.cursorMove.src ="https://www.dropbox.com/s/fiyx4q2mdwynraj/FF7CursorMove.mp3?raw=1";
+      this.cursorMove.volume = 0.4
       
     this.cursorSelect = new Audio();
       this.cursorSelect.src = 'https://www.dropbox.com/s/v04ewrevpnnsz03/FF7CursorSaveLoad.mp3?raw=1';
+      this.cursorSelect.volume = 0.4
 
     this.menuItems = document.querySelectorAll(`${querySelec}`);
 

@@ -103,6 +103,7 @@ class Character {
     this.job = job;
     this.KO = false;
     this.ctx = ctx
+    this.frame = 0
   }
 
   draw(index, bool){
@@ -168,7 +169,9 @@ class Game {
     this.drawBackground(ctx);
     this.drawSprites(ctx);
     document.body.addEventListener("animationend" , () => {
+      console.log("why you no animation")
       document.body.style.backgroundColor = "black";
+      this.currentChar = 0
     })
   }
 
@@ -331,22 +334,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if(titleScreenBool){
     let titleScreen = document.getElementById("press-start")
-    console.log("remounted")
-    titleScreenBool = false
-     document.body.addEventListener('keydown', function(e){
-      if(e.keyCode == 13){
-        titleScreen.classList.remove("title-screen-appearing");
-        menuClass.cursorSelect.play()
-        titleScreen.classList.add("title-screen-disappear");
-      }
-    });
+    titleScreen.addEventListener("animationend", function(){
+      console.log("remounted")
+      titleScreenBool = false
+      document.body.addEventListener('keydown', function(e){
+        if(e.keyCode == 13){
+          titleScreen.classList.remove("title-screen-appearing");
+          menuClass.cursorSelect.play()
+          titleScreen.classList.add("title-screen-disappear");
+        }
+      })
+    })
     titleScreen.addEventListener("animationend", function(){
       i += 1
       if(i === 1){ return }
       document.getElementById("title-screen-controller").classList.add("none");
       gameRouter.start()
       document.getElementById("title-screen-menu").classList.remove("none");
-      document.getElementById("title-audio").play();
+      let titleMusic = document.getElementById("title-audio")
+      titleMusic.volume = 0.3
+      titleMusic.play();
     })
   }
 
@@ -377,9 +384,11 @@ class Menu {
 
     this.cursorMove = new Audio(); //move sound.
       this.cursorMove.src ="https://www.dropbox.com/s/fiyx4q2mdwynraj/FF7CursorMove.mp3?raw=1";
+      this.cursorMove.volume = 0.4
       
     this.cursorSelect = new Audio();
       this.cursorSelect.src = 'https://www.dropbox.com/s/v04ewrevpnnsz03/FF7CursorSaveLoad.mp3?raw=1';
+      this.cursorSelect.volume = 0.4
 
     this.menuItems = document.querySelectorAll(`${querySelec}`);
 

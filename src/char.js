@@ -5,6 +5,7 @@ export default class Character {
     this.job = job;
     this.KO = false;
     this.ctx = ctx
+    this.frame = 0
   }
 
   draw(index, bool){

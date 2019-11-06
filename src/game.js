@@ -14,7 +14,9 @@ export default class Game {
     this.drawBackground(ctx);
     this.drawSprites(ctx);
     document.body.addEventListener("animationend" , () => {
+      console.log("why you no animation")
       document.body.style.backgroundColor = "black";
+      this.currentChar = 0
     })
   }
 
