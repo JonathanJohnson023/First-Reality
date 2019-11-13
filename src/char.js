@@ -1,32 +1,27 @@
 export default class Character {
-  constructor(job, ctx){
+  constructor(job, ctx, frame){
     this.level = 1;
     this.health = 100;
     this.job = job;
     this.KO = false;
     this.ctx = ctx
+    this.charX = 0
     this.frame = 0
+    this.frameCount = 10
   }
 
   draw(index, bool){
     console.log("char draw")
     let heightFloat = this.spriteHeight(index)
     if(bool){
-      return this.walkForward(index)
-    }else if(this.job === "knight"){
-      return [0, 0, 48, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
+      return this.walkForward(index, heightFloat)
     }else {
       return [0, 0, 64, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
     }
   }
 
-  walkForward(index){
-    let heightFloat = this.spriteHeight(index)
-    if(this.job === "knight"){
-      return [48, 0, 48, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else {
-      return [0, 0, 64* 2, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }
+  walkForward(index, heightFloat){
+    return [64, 0, 64, 64, this.ctx.width * 0.85 - parseInt(this.frame + "00"), this.ctx.height * heightFloat + this.ctx.height * 0.3]
   }
 
   attack(){

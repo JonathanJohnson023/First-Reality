@@ -97,34 +97,29 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Character; });
 class Character {
-  constructor(job, ctx){
+  constructor(job, ctx, frame){
     this.level = 1;
     this.health = 100;
     this.job = job;
     this.KO = false;
     this.ctx = ctx
+    this.charX = 0
     this.frame = 0
+    this.frameCount = 10
   }
 
   draw(index, bool){
     console.log("char draw")
     let heightFloat = this.spriteHeight(index)
     if(bool){
-      return this.walkForward(index)
-    }else if(this.job === "knight"){
-      return [0, 0, 48, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
+      return this.walkForward(index, heightFloat)
     }else {
       return [0, 0, 64, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3]
     }
   }
 
-  walkForward(index){
-    let heightFloat = this.spriteHeight(index)
-    if(this.job === "knight"){
-      return [48, 0, 48, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }else {
-      return [0, 0, 64* 2, 64, this.ctx.width * 0.75, this.ctx.height * heightFloat + this.ctx.height * 0.3]
-    }
+  walkForward(index, heightFloat){
+    return [64, 0, 64, 64, this.ctx.width * 0.85 - parseInt(this.frame + "00"), this.ctx.height * heightFloat + this.ctx.height * 0.3]
   }
 
   attack(){
@@ -159,14 +154,13 @@ class Game {
     this.party = []
     this.enemies = [];
     this.wave = 0;
-    this.currentChar = null;
+    this.currentChar = 0;
     this.ctx = ctx;
-    
+    this.frame = 0
     this.draw = this.draw.bind(this);
   }
 
   draw(ctx){
-    this.drawBackground(ctx);
     this.drawSprites(ctx);
     document.body.addEventListener("animationend" , () => {
       console.log("why you no animation")
@@ -176,7 +170,6 @@ class Game {
   }
 
   start(){
-    console.log("hello from game")
     const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("knight", this.ctx);
     const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("cleric", this.ctx);
     const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("archer", this.ctx);
@@ -192,6 +185,7 @@ class Game {
   }
 
   drawSprites(ctx){
+    this.drawBackground(ctx);
     let current = this.currentChar
     this.party.forEach((obj, index) => {
 
@@ -234,6 +228,7 @@ class GameRouter {
     this.menuCtx = canvas.getContext("2d")
     this.lastTime = 0;
     this.title = document.getElementById("title-screen-text-wrapper")
+    this.time = 0
   }
 
 
@@ -268,7 +263,7 @@ class GameRouter {
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
       }, {once: true})
-      this.game.start();
+      this.game.start(this.ctx);
       requestAnimationFrame(this.gameAnimate.bind(this));
 
     }else if(selection.innerText === "How To Play"){
@@ -279,13 +274,19 @@ class GameRouter {
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
+    this.time++
     this.ctx.width  = window.innerWidth;
     this.ctx.height = window.innerHeight;
     this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
     // this.game.step(timeDelta);
+    if(this.time > 50){
+      
+      this.time = 0
+    }
     this.game.draw(this.ctx);
+    // this.game.drawBackground(this.ctx);
     this.lastTime = time;
 
     // every call to animate requests causes another call to animate

@@ -4,14 +4,13 @@ export default class Game {
     this.party = []
     this.enemies = [];
     this.wave = 0;
-    this.currentChar = null;
+    this.currentChar = 0;
     this.ctx = ctx;
-    
+    this.frame = 0
     this.draw = this.draw.bind(this);
   }
 
   draw(ctx){
-    this.drawBackground(ctx);
     this.drawSprites(ctx);
     document.body.addEventListener("animationend" , () => {
       console.log("why you no animation")
@@ -21,7 +20,6 @@ export default class Game {
   }
 
   start(){
-    console.log("hello from game")
     const knight = new Sprite("knight", this.ctx);
     const cleric = new Sprite("cleric", this.ctx);
     const archer = new Sprite("archer", this.ctx);
@@ -37,6 +35,7 @@ export default class Game {
   }
 
   drawSprites(ctx){
+    this.drawBackground(ctx);
     let current = this.currentChar
     this.party.forEach((obj, index) => {
 
