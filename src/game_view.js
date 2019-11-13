@@ -8,6 +8,7 @@ export default class GameRouter {
     this.menuCtx = canvas.getContext("2d")
     this.lastTime = 0;
     this.title = document.getElementById("title-screen-text-wrapper")
+    this.time = 0
   }
 
 
@@ -42,7 +43,7 @@ export default class GameRouter {
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
       }, {once: true})
-      this.game.start();
+      this.game.start(this.ctx);
       requestAnimationFrame(this.gameAnimate.bind(this));
 
     }else if(selection.innerText === "How To Play"){
@@ -53,13 +54,19 @@ export default class GameRouter {
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
+    this.time++
     this.ctx.width  = window.innerWidth;
     this.ctx.height = window.innerHeight;
     this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
     // this.game.step(timeDelta);
+    if(this.time > 5){
+      if(this.game.aniDone) this.game.frame++
+      this.time = 0
+    }
     this.game.draw(this.ctx);
+    // this.game.drawBackground(this.ctx);
     this.lastTime = time;
 
     // every call to animate requests causes another call to animate
