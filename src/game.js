@@ -8,6 +8,7 @@ export default class Game {
     this.ctx = ctx;
     this.frame = 0
     this.draw = this.draw.bind(this);
+    this.aniDone = false
   }
 
   draw(ctx){
@@ -15,7 +16,7 @@ export default class Game {
     document.body.addEventListener("animationend" , () => {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
-      this.currentChar = 0
+      this.aniDone = true
     })
   }
 
@@ -41,8 +42,8 @@ export default class Game {
 
       let sprite = new Image();
       sprite.src = `image${index}.png`;
-      let cord = current === index ? obj.draw(index, true) : obj.draw(index);
-      ctx.drawImage(sprite, ...cord , 125, 125 )
+      current === index ? obj.walkForward(ctx, sprite, index, this.frame) : obj.draw(ctx, sprite, index);
+      // ctx.drawImage(sprite, ...cord , 125, 125 )
     })
   }
 

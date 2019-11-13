@@ -61,8 +61,8 @@ export default class GameRouter {
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
     // this.game.step(timeDelta);
-    if(this.time > 50){
-      
+    if(this.time > 5){
+      if(this.game.aniDone) this.game.frame++
       this.time = 0
     }
     this.game.draw(this.ctx);
