@@ -97,36 +97,47 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Character; });
 class Character {
-  constructor(job, ctx, frame){
+  constructor(job, ctx, sprite, index){
     this.level = 1;
     this.health = 100;
-    this.job = job;
     this.KO = false;
+    this.job = job;
     this.ctx = ctx
-    this.charX = 0
-    this.frame = 0
-    this.frameCount = 10
+    this.sprite = sprite;
+    this.index = index;
+    this.frame = 0;
+
+    this.spriteHeight(index)
   }
 
   isOdd(n){
     return Math.abs(n % 2) == 1;
   }
 
-  draw(ctx, sprite, index){
-    console.log("char draw")
-    let heightFloat = this.spriteHeight(index)
-      ctx.drawImage(sprite, 0, 0, 64, 64, this.ctx.width * 0.85, this.ctx.height * heightFloat + this.ctx.height * 0.3 , 125, 125 )
+  draw(ctx){
+    debugger
+    ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.width * 0.75, this.ctx.height * this.heightFloat + 150 , 125, 125 )
   }
 
-  walkForward(ctx, sprite, index, frame){
-    let heightFloat = this.spriteHeight(index)
-    if(frame >= 20) frame = 20
-    if(this.isOdd(frame)){
-      ctx.drawImage(sprite, 64, 0, 64, 64, this.ctx.width * 0.85 - parseInt(frame + "0"), this.ctx.height * heightFloat + this.ctx.height * 0.3 , 125, 125 )
+  walkForward(frame){
+    this.frame = frame
+    if(this.frame >= 10) this.frame = 10
+    if(this.isOdd(this.frame)){
+      this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.ctx.width * 0.75 - parseInt(this.frame + "0"), this.ctx.height * this.heightFloat + 150 , 125, 125 )
     }else{
-      ctx.drawImage(sprite, 0, 0, 64, 64, this.ctx.width * 0.85 - parseInt(frame + "0"), this.ctx.height * heightFloat + this.ctx.height * 0.3 , 125, 125 )
+      this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.width * 0.75 - parseInt(this.frame + "0"), this.ctx.height * this.heightFloat + 150 , 125, 125 )
     }
   }
+
+  // walkBack(){
+  //   while(this.frame > 0){
+  //     if(this.isOdd(frame)){
+  //       this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.ctx.width * 0.85 + parseInt(frame + "0"), this.ctx.height * this.heightFloat + this.ctx.height * 0.3 , 125, 125 )
+  //     }else{
+  //       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.width * 0.85 + parseInt(frame + "0"), this.ctx.height * this.heightFloat + this.ctx.height * 0.3 , 125, 125 )
+  //     }
+  //   }
+  // }
 
   attack(){
 
@@ -135,7 +146,7 @@ class Character {
   spriteHeight(int){
     let numFloat = int + int * 0.5
     let num = Number(numFloat.toString().replace('.',''))
-    return parseFloat(`0.${num}`)
+    this.heightFloat = parseFloat(`0.${num}`)
   }
 
 
@@ -154,21 +165,30 @@ class Character {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Game; });
 /* harmony import */ var _char__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./char */ "./src/char.js");
+/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
+
 
 class Game {
   constructor(ctx){
     this.party = []
     this.enemies = [];
     this.wave = 0;
-    this.currentChar = 0;
+    this.currentChar = null;
+    this.currentCharIndex = 0;
     this.ctx = ctx;
     this.frame = 0
     this.draw = this.draw.bind(this);
     this.aniDone = false
   }
 
-  draw(ctx){
-    this.drawSprites(ctx);
+  draw(){
+    this.currentChar = this.party[this.currentCharIndex]
+    this.ctx.width  = window.innerWidth;
+    this.ctx.height = window.innerHeight;
+    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
+    this.drawSprites();
     document.body.addEventListener("animationend" , () => {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
@@ -176,32 +196,38 @@ class Game {
     })
   }
 
-  start(){
-    const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("knight", this.ctx);
-    const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("cleric", this.ctx);
-    const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("archer", this.ctx);
-    const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("wizard", this.ctx);
+  start(ctx){
+    this.ctx = ctx
+    const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("knight", this.ctx, null, 0);
+    const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("cleric", this.ctx, null, 1);
+    const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("archer", this.ctx, null, 2);
+    const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("wizard", this.ctx, null, 3);
     this.party.push(knight, cleric, archer, wizard);
   } 
   
-  drawBackground(ctx){
+  drawBackground(){
     const background = new Image()
       background.src = "battle_backgrounds.png"
-    ctx.drawImage(background, 522, 5, 270, 155, 0, 0, ctx.width, ctx.height)
-
+    this.ctx.drawImage(background, 522, 5, 270, 155, 0, 0, this.ctx.width, this.ctx.height)
   }
 
-  drawSprites(ctx){
-    this.drawBackground(ctx);
-    let current = this.currentChar
+  drawSprites(){
+    this.drawBackground();
+    let current = this.currentCharIndex;
     this.party.forEach((obj, index) => {
 
       let sprite = new Image();
       sprite.src = `image${index}.png`;
-      current === index ? obj.walkForward(ctx, sprite, index, this.frame) : obj.draw(ctx, sprite, index);
-      // ctx.drawImage(sprite, ...cord , 125, 125 )
+      obj.sprite = sprite;
+      obj.index = index;
+      current === index ? obj.walkForward(this.frame) : obj.draw(this.ctx);
     })
   }
+
+  // onSelect(){
+  //   this.currentChar.walkBack();
+  //   this.currentCharIndex++
+  // }
 
   addEnemy(){
 
@@ -224,8 +250,6 @@ class Game {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return GameRouter; });
-/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
-
 class GameRouter {
   constructor(menu,game,tutorial,canvas){  
     this.menu = menu;
@@ -274,7 +298,7 @@ class GameRouter {
       requestAnimationFrame(this.gameAnimate.bind(this));
 
     }else if(selection.innerText === "How To Play"){
-      const menu = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]("")
+      const menu = new Menu("")
       this.tutorial.start(menu)
     }
   }
@@ -282,17 +306,12 @@ class GameRouter {
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
     this.time++
-    this.ctx.width  = window.innerWidth;
-    this.ctx.height = window.innerHeight;
-    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
     // this.game.step(timeDelta);
     if(this.time > 5){
       if(this.game.aniDone) this.game.frame++
       this.time = 0
     }
-    this.game.draw(this.ctx);
+    this.game.draw();
     // this.game.drawBackground(this.ctx);
     this.lastTime = time;
 
@@ -328,13 +347,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuClass = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]('#menu li')
   const tutorial = new _tutorial__WEBPACK_IMPORTED_MODULE_2__["default"]
   const canvas = document.getElementById("battle-view");
-  const menuCanvas = document.getElementById("battle-menu")
+  const menuUI = document.getElementById("party-moves")
   const theGame = new _game__WEBPACK_IMPORTED_MODULE_1__["default"](canvas)
   canvas.width  = window.innerWidth * 0.85;
   canvas.height = window.innerHeight * 0.80;
-  menuCanvas.width  = canvas.width - 50;
-  menuCanvas.height = window.innerHeight - canvas.height - 50;
-  const gameRouter = new _game_view__WEBPACK_IMPORTED_MODULE_3__["default"](menuClass, theGame, tutorial, canvas, menuCanvas)
+  // menuUI.width  = canvas.width - 50;
+  // menuUI.height = window.innerHeight - canvas.height - 50;
+  const gameRouter = new _game_view__WEBPACK_IMPORTED_MODULE_3__["default"](menuClass, theGame, tutorial, canvas, menuUI)
 
   let i = 0
   let titleScreenBool = true

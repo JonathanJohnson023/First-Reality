@@ -8,13 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuClass = new Menu('#menu li')
   const tutorial = new Instructions
   const canvas = document.getElementById("battle-view");
-  const menuCanvas = document.getElementById("battle-menu")
+  const menuUI = document.getElementById("party-moves")
   const theGame = new Game(canvas)
   canvas.width  = window.innerWidth * 0.85;
   canvas.height = window.innerHeight * 0.80;
-  menuCanvas.width  = canvas.width - 50;
-  menuCanvas.height = window.innerHeight - canvas.height - 50;
-  const gameRouter = new GameView(menuClass, theGame, tutorial, canvas, menuCanvas)
+  // menuUI.width  = canvas.width - 50;
+  // menuUI.height = window.innerHeight - canvas.height - 50;
+  const gameRouter = new GameView(menuClass, theGame, tutorial, canvas, menuUI)
 
   let i = 0
   let titleScreenBool = true

@@ -1,4 +1,3 @@
-import Menu from "./menu"
 export default class GameRouter {
   constructor(menu,game,tutorial,canvas){  
     this.menu = menu;
@@ -55,17 +54,12 @@ export default class GameRouter {
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
     this.time++
-    this.ctx.width  = window.innerWidth;
-    this.ctx.height = window.innerHeight;
-    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
     // this.game.step(timeDelta);
     if(this.time > 5){
       if(this.game.aniDone) this.game.frame++
       this.time = 0
     }
-    this.game.draw(this.ctx);
+    this.game.draw();
     // this.game.drawBackground(this.ctx);
     this.lastTime = time;
 
