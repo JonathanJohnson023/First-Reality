@@ -8,36 +8,56 @@ export default class Character {
     this.sprite = sprite;
     this.index = index;
     this.frame = 0;
-
+    this.forward = false;
+    this.back = false;
     this.spriteHeight(index)
+    this.canvasX = this.ctx.canvas.width * 0.85
+    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 
+
   }
 
   isOdd(n){
     return Math.abs(n % 2) == 1;
   }
 
-  draw(){
-    this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.canvas.width * 0.85, this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 , 125, 125 )
-  }
-
-  walkForward(frame){
-    this.frame = frame
-    if(this.frame >= 10) this.frame = 10
-    if(this.isOdd(this.frame)){
-      this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.ctx.canvas.width * 0.85 - parseInt(this.frame + "0"), this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 , 125, 125 )
+  draw(callback){
+    if(this.forward && this.frame <= 9){
+      this.walkForward(callback);
+    }else if(this.back && this.frame >= 1 ){
+      this.walkBack();
     }else{
-      this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.canvas.width * 0.85 - parseInt(this.frame + "0"), this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 , 125, 125 )
+      this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX, this.canvasY , 125, 125 )
     }
   }
 
-  // walkBack(){
-  //   while(this.frame > 0){
-  //     if(this.isOdd(frame)){
-  //       this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.ctx.width * 0.85 + parseInt(frame + "0"), this.ctx.height * this.heightFloat + this.ctx.height * 0.3 , 125, 125 )
-  //     }else{
-  //       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.width * 0.85 + parseInt(frame + "0"), this.ctx.height * this.heightFloat + this.ctx.height * 0.3 , 125, 125 )
+  walkForward(callback){
+    debugger
+    this.frame++
+    if(this.isOdd(this.frame)){
+      this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.canvasX -= parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+    }else if(this.frame <= 9){
+      this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX -= parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+    }
+    if (this.frame == 10){
+        callback()
+    }
+  }
+
+  walkBack(){
+    this.frame--
+      if(this.isOdd(this.frame)){
+        this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.canvasX += parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+      }else if(this.frame >= 1){
+        this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX += parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+      }
+  }
+
+  // walkingCaller(callback){ 
+  //     if( this.frame < 10 ){
+  //       this.walkForward(callback);
+  //     }else if( this.frame > 0){
+  //       this.walkBack(callback);
   //     }
-  //   }
   // }
 
   attack(){

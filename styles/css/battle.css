@@ -1,6 +1,6 @@
 #battleView{
   object-fit: contain;
-  background: black;
+	background: black;
 }
 
 #battle-view{
@@ -13,7 +13,7 @@
   display: block;
   background: black;
 }
-#battle-menu{
+#battle-ui{
   bottom: 30px;
   position: absolute;
   padding: 0;
@@ -22,8 +22,8 @@
   left: 0;
   right: 0;
 }
-#battle-menu{
-	/* position: absolute; */
+#battle-ui{
+	position: absolute;
 	padding: 10px 0px 10px 40px;
 	/* width: 250px; */
 	list-style: none;
@@ -43,7 +43,7 @@
 	 animation-timing-function: ease;		  	  
 }
 
-#battle-menu li {
+#battle-ui li {
 	line-height:40px;
 	width: fit-content;
 	color: white;
@@ -51,6 +51,6 @@
 	padding: 8px 0;
 }
 
-#battle-menu li:hover{
+#battle-ui li:hover{
 	cursor: none;
 }

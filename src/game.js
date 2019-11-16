@@ -9,8 +9,10 @@ export default class Game {
     this.currentCharIndex = 0;
     this.ctx = ctx;
     this.frame = 0
-    this.draw = this.draw.bind(this);
     this.aniDone = false
+    
+    this.draw = this.draw.bind(this);
+    this.charIndexIncrease = this.charIndexIncrease.bind(this);
   }
 
   draw(){
@@ -20,16 +22,18 @@ export default class Game {
     this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
-    this.drawSprites();
+    
+    this.drawBackground();
+    this.addSprites();
+    
     document.body.addEventListener("animationend" , () => {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
-      this.aniDone = true
+      this.aniDone = true;
     })
   }
 
-  start(ctx){
-    this.ctx = ctx
+  start(){
     const knight = new Sprite("knight", this.ctx, null, 0);
     const cleric = new Sprite("cleric", this.ctx, null, 1);
     const archer = new Sprite("archer", this.ctx, null, 2);
@@ -43,28 +47,36 @@ export default class Game {
     this.ctx.drawImage(background, 522, 5, 270, 155, 0, 0, this.ctx.width, this.ctx.height)
   }
 
-  drawSprites(){
-    this.drawBackground();
-    let current = this.currentCharIndex;
+  addSprites(){
     this.party.forEach((obj, index) => {
-
       let sprite = new Image();
-      sprite.src = `image${index}.png`;
+        sprite.src = `image${index}.png`;
       obj.sprite = sprite;
       obj.index = index;
-      current === index ? obj.walkForward(this.frame) : obj.draw(this.ctx);
+
+      obj.draw(this.charIndexIncrease);
     })
   }
 
-  // onSelect(){
-  //   this.currentChar.walkBack();
-  //   this.currentCharIndex++
-  // }
+  onSelect(){
+    this.currentChar.back = false;
+    this.currentChar.forward = true;
+    if(this.currentCharIndex > 0){
+      this.party[this.currentCharIndex - 1].back = true
+      this.party[this.currentCharIndex - 1].forward = false;
+    } else{
+      this.party[3].back = true;
+      this.party[3].forward = false;
+    }
+  }
 
   addEnemy(){
 
   }
 
+  charIndexIncrease(){
+    this.currentCharIndex >= 3 ? this.currentCharIndex = 0 : this.currentCharIndex++
+  }
   
 
 

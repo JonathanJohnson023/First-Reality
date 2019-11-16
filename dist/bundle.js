@@ -106,36 +106,56 @@ class Character {
     this.sprite = sprite;
     this.index = index;
     this.frame = 0;
-
+    this.forward = false;
+    this.back = false;
     this.spriteHeight(index)
+    this.canvasX = this.ctx.canvas.width * 0.85
+    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 
+
   }
 
   isOdd(n){
     return Math.abs(n % 2) == 1;
   }
 
-  draw(){
-    this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.canvas.width * 0.85, this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 , 125, 125 )
-  }
-
-  walkForward(frame){
-    this.frame = frame
-    if(this.frame >= 10) this.frame = 10
-    if(this.isOdd(this.frame)){
-      this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.ctx.canvas.width * 0.85 - parseInt(this.frame + "0"), this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 , 125, 125 )
+  draw(callback){
+    if(this.forward && this.frame <= 9){
+      this.walkForward(callback);
+    }else if(this.back && this.frame >= 1 ){
+      this.walkBack();
     }else{
-      this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.canvas.width * 0.85 - parseInt(this.frame + "0"), this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 , 125, 125 )
+      this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX, this.canvasY , 125, 125 )
     }
   }
 
-  // walkBack(){
-  //   while(this.frame > 0){
-  //     if(this.isOdd(frame)){
-  //       this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.ctx.width * 0.85 + parseInt(frame + "0"), this.ctx.height * this.heightFloat + this.ctx.height * 0.3 , 125, 125 )
-  //     }else{
-  //       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.ctx.width * 0.85 + parseInt(frame + "0"), this.ctx.height * this.heightFloat + this.ctx.height * 0.3 , 125, 125 )
+  walkForward(callback){
+    debugger
+    this.frame++
+    if(this.isOdd(this.frame)){
+      this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.canvasX -= parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+    }else if(this.frame <= 9){
+      this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX -= parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+    }
+    if (this.frame == 10){
+        callback()
+    }
+  }
+
+  walkBack(){
+    this.frame--
+      if(this.isOdd(this.frame)){
+        this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.canvasX += parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+      }else if(this.frame >= 1){
+        this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX += parseInt(this.frame + "0"), this.canvasY , 125, 125 )
+      }
+  }
+
+  // walkingCaller(callback){ 
+  //     if( this.frame < 10 ){
+  //       this.walkForward(callback);
+  //     }else if( this.frame > 0){
+  //       this.walkBack(callback);
   //     }
-  //   }
   // }
 
   attack(){
@@ -176,8 +196,10 @@ class Game {
     this.currentCharIndex = 0;
     this.ctx = ctx;
     this.frame = 0
-    this.draw = this.draw.bind(this);
     this.aniDone = false
+    
+    this.draw = this.draw.bind(this);
+    this.charIndexIncrease = this.charIndexIncrease.bind(this);
   }
 
   draw(){
@@ -187,16 +209,18 @@ class Game {
     this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
-    this.drawSprites();
+    
+    this.drawBackground();
+    this.addSprites();
+    
     document.body.addEventListener("animationend" , () => {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
-      this.aniDone = true
+      this.aniDone = true;
     })
   }
 
-  start(ctx){
-    this.ctx = ctx
+  start(){
     const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("knight", this.ctx, null, 0);
     const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("cleric", this.ctx, null, 1);
     const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("archer", this.ctx, null, 2);
@@ -210,28 +234,36 @@ class Game {
     this.ctx.drawImage(background, 522, 5, 270, 155, 0, 0, this.ctx.width, this.ctx.height)
   }
 
-  drawSprites(){
-    this.drawBackground();
-    let current = this.currentCharIndex;
+  addSprites(){
     this.party.forEach((obj, index) => {
-
       let sprite = new Image();
-      sprite.src = `image${index}.png`;
+        sprite.src = `image${index}.png`;
       obj.sprite = sprite;
       obj.index = index;
-      current === index ? obj.walkForward(this.frame) : obj.draw(this.ctx);
+
+      obj.draw(this.charIndexIncrease);
     })
   }
 
-  // onSelect(){
-  //   this.currentChar.walkBack();
-  //   this.currentCharIndex++
-  // }
+  onSelect(){
+    this.currentChar.back = false;
+    this.currentChar.forward = true;
+    if(this.currentCharIndex > 0){
+      this.party[this.currentCharIndex - 1].back = true
+      this.party[this.currentCharIndex - 1].forward = false;
+    } else{
+      this.party[3].back = true;
+      this.party[3].forward = false;
+    }
+  }
 
   addEnemy(){
 
   }
 
+  charIndexIncrease(){
+    this.currentCharIndex >= 3 ? this.currentCharIndex = 0 : this.currentCharIndex++
+  }
   
 
 
@@ -287,30 +319,33 @@ class GameRouter {
       this.title.classList.remove("appearing");
       this.title.classList.add("disappearing");
       titleAudio.volume = 0.3
+      this.game.ctx = this.ctx
       
       this.title.addEventListener("animationend", () => {
         this.title.classList.add("none");
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
+        this.game.start();
       }, {once: true})
-      this.game.start(this.ctx);
       requestAnimationFrame(this.gameAnimate.bind(this));
 
     }else if(selection.innerText === "How To Play"){
       const menu = new Menu("")
       this.tutorial.start(menu)
+    }else{
     }
+    this.game.onSelect()
   }
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
     this.time++
     // this.game.step(timeDelta);
-    if(this.time > 5){
+    if(this.time > 15){
       if(this.game.aniDone) this.game.frame++
       this.time = 0
+      this.game.draw();
     }
-    this.game.draw();
     // this.game.drawBackground(this.ctx);
     this.lastTime = time;
 
