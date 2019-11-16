@@ -13,24 +13,47 @@
   display: block;
   background: black;
 }
-#battle-ui{
+
+#enemies-ui{
+	left: 0;
+	background: radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
+	background: -moz-radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
+ background: -webkit-radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
+ background: -o-radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
+}
+
+#party-moves{
+	width: 33%;
+	 left: 0;
+	right: 0;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#party-ui{
+	right: 0;
+}
+
+.battle-ui{
   bottom: 30px;
   position: absolute;
   padding: 0;
   margin: auto;
   display: block;
-  left: 0;
-  right: 0;
+  /* left: 0;
+  right: 0; */
 }
-#battle-ui{
+.battle-ui{
 	position: absolute;
 	padding: 10px 0px 10px 40px;
 	/* width: 250px; */
 	list-style: none;
-	background: radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
-    background: -moz-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
-	 background: -webkit-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
-	 background: -o-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000446);
+	background: radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
+    background: -moz-radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
+	 background: -webkit-radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
+	 background: -o-radial-gradient(-180px 0px,circle ,#000446 100px,#001b85 100px,#0053ad);
 	border: 5px solid;
 	border-radius: 15px;
 	 -moz-border-radius: 15px;
@@ -43,7 +66,7 @@
 	 animation-timing-function: ease;		  	  
 }
 
-#battle-ui li {
+.battle-ui li {
 	line-height:40px;
 	width: fit-content;
 	color: white;
@@ -51,6 +74,6 @@
 	padding: 8px 0;
 }
 
-#battle-ui li:hover{
+.battle-ui li:hover{
 	cursor: none;
 }
