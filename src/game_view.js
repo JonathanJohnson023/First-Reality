@@ -1,4 +1,3 @@
-import Menu from "./menu"
 export default class GameRouter {
   constructor(menu,game,tutorial,canvas){  
     this.menu = menu;
@@ -37,35 +36,33 @@ export default class GameRouter {
       this.title.classList.remove("appearing");
       this.title.classList.add("disappearing");
       titleAudio.volume = 0.3
+      this.game.ctx = this.ctx
       
       this.title.addEventListener("animationend", () => {
         this.title.classList.add("none");
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
+        this.game.start();
       }, {once: true})
-      this.game.start(this.ctx);
       requestAnimationFrame(this.gameAnimate.bind(this));
 
     }else if(selection.innerText === "How To Play"){
       const menu = new Menu("")
       this.tutorial.start(menu)
+    }else{
     }
+    this.game.onSelect()
   }
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
     this.time++
-    this.ctx.width  = window.innerWidth;
-    this.ctx.height = window.innerHeight;
-    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
     // this.game.step(timeDelta);
-    if(this.time > 5){
+    if(this.time > 15){
       if(this.game.aniDone) this.game.frame++
       this.time = 0
+      this.game.draw();
     }
-    this.game.draw(this.ctx);
     // this.game.drawBackground(this.ctx);
     this.lastTime = time;
 

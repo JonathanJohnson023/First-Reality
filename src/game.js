@@ -1,56 +1,82 @@
 import Sprite from "./char"
+import Menu from "./menu"
 export default class Game {
   constructor(ctx){
     this.party = []
     this.enemies = [];
     this.wave = 0;
-    this.currentChar = 0;
+    this.currentChar = null;
+    this.currentCharIndex = 0;
     this.ctx = ctx;
     this.frame = 0
-    this.draw = this.draw.bind(this);
     this.aniDone = false
+    
+    this.draw = this.draw.bind(this);
+    this.charIndexIncrease = this.charIndexIncrease.bind(this);
   }
 
-  draw(ctx){
-    this.drawSprites(ctx);
+  draw(){
+    this.currentChar = this.party[this.currentCharIndex]
+    this.ctx.width  = window.innerWidth;
+    this.ctx.height = window.innerHeight;
+    this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height);
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(0, 0, this.ctx.width, this.ctx.height);
+    
+    this.drawBackground();
+    this.addSprites();
+    
     document.body.addEventListener("animationend" , () => {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
-      this.aniDone = true
+      this.aniDone = true;
     })
   }
 
   start(){
-    const knight = new Sprite("knight", this.ctx);
-    const cleric = new Sprite("cleric", this.ctx);
-    const archer = new Sprite("archer", this.ctx);
-    const wizard = new Sprite("wizard", this.ctx);
+    const knight = new Sprite("knight", this.ctx, null, 0);
+    const cleric = new Sprite("cleric", this.ctx, null, 1);
+    const archer = new Sprite("archer", this.ctx, null, 2);
+    const wizard = new Sprite("wizard", this.ctx, null, 3);
     this.party.push(knight, cleric, archer, wizard);
   } 
   
-  drawBackground(ctx){
+  drawBackground(){
     const background = new Image()
       background.src = "battle_backgrounds.png"
-    ctx.drawImage(background, 522, 5, 270, 155, 0, 0, ctx.width, ctx.height)
-
+    this.ctx.drawImage(background, 522, 5, 270, 155, 0, 0, this.ctx.width, this.ctx.height)
   }
 
-  drawSprites(ctx){
-    this.drawBackground(ctx);
-    let current = this.currentChar
+  addSprites(){
     this.party.forEach((obj, index) => {
-
       let sprite = new Image();
-      sprite.src = `image${index}.png`;
-      current === index ? obj.walkForward(ctx, sprite, index, this.frame) : obj.draw(ctx, sprite, index);
-      // ctx.drawImage(sprite, ...cord , 125, 125 )
+        sprite.src = `image${index}.png`;
+      obj.sprite = sprite;
+      obj.index = index;
+
+      obj.draw(this.charIndexIncrease);
     })
+  }
+
+  onSelect(){
+    this.currentChar.back = false;
+    this.currentChar.forward = true;
+    if(this.currentCharIndex > 0){
+      this.party[this.currentCharIndex - 1].back = true
+      this.party[this.currentCharIndex - 1].forward = false;
+    } else{
+      this.party[3].back = true;
+      this.party[3].forward = false;
+    }
   }
 
   addEnemy(){
 
   }
 
+  charIndexIncrease(){
+    this.currentCharIndex >= 3 ? this.currentCharIndex = 0 : this.currentCharIndex++
+  }
   
 
 
