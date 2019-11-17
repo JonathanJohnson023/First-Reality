@@ -1,7 +1,8 @@
 export default class Character {
   constructor(job, ctx, sprite, index){
     this.level = 1;
-    this.health = 100;
+    this.maxHealth = 100
+    this.health = this.maxHealth;
     this.KO = false;
     this.job = job;
     this.ctx = ctx
@@ -10,6 +11,8 @@ export default class Character {
     this.frame = 0;
     this.forward = false;
     this.back = false;
+    this.partyHpUi = document.getElementById("party-ui").getContext("2d");
+    this.partyHpUi.font = "26px Final Fantasy"
     this.spriteHeight(index)
     this.canvasX = this.ctx.canvas.width * 0.85
     this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 
@@ -28,10 +31,12 @@ export default class Character {
     }else{
       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX, this.canvasY , 125, 125 )
     }
+    this.partyHpUi.fillText(this.job, 25, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
+    this.partyHpUi.fillText(`${this.health} / ${this.maxHealth}`, this.partyHpUi.canvas.width - 125, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
+
   }
 
   walkForward(callback){
-    debugger
     this.frame++
     if(this.isOdd(this.frame)){
       this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.canvasX -= parseInt(this.frame + "0"), this.canvasY , 125, 125 )

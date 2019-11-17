@@ -99,7 +99,8 @@ __webpack_require__.r(__webpack_exports__);
 class Character {
   constructor(job, ctx, sprite, index){
     this.level = 1;
-    this.health = 100;
+    this.maxHealth = 100
+    this.health = this.maxHealth;
     this.KO = false;
     this.job = job;
     this.ctx = ctx
@@ -108,6 +109,8 @@ class Character {
     this.frame = 0;
     this.forward = false;
     this.back = false;
+    this.partyHpUi = document.getElementById("party-ui").getContext("2d");
+    this.partyHpUi.font = "26px Final Fantasy"
     this.spriteHeight(index)
     this.canvasX = this.ctx.canvas.width * 0.85
     this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 
@@ -126,10 +129,12 @@ class Character {
     }else{
       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX, this.canvasY , 125, 125 )
     }
+    this.partyHpUi.fillText(this.job, 25, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
+    this.partyHpUi.fillText(`${this.health} / ${this.maxHealth}`, this.partyHpUi.canvas.width - 125, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
+
   }
 
   walkForward(callback){
-    debugger
     this.frame++
     if(this.isOdd(this.frame)){
       this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.canvasX -= parseInt(this.frame + "0"), this.canvasY , 125, 125 )
@@ -221,10 +226,10 @@ class Game {
   }
 
   start(){
-    const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("knight", this.ctx, null, 0);
-    const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("cleric", this.ctx, null, 1);
-    const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("archer", this.ctx, null, 2);
-    const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("wizard", this.ctx, null, 3);
+    const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Knight", this.ctx, null, 0);
+    const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Cleric", this.ctx, null, 1);
+    const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Archer", this.ctx, null, 2);
+    const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Wizard", this.ctx, null, 3);
     this.party.push(knight, cleric, archer, wizard);
   } 
   
@@ -378,16 +383,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const menuClass = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]('#menu li')
-  const tutorial = new _tutorial__WEBPACK_IMPORTED_MODULE_2__["default"]
+  const menuClass = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]('#menu li');
+  const tutorial = new _tutorial__WEBPACK_IMPORTED_MODULE_2__["default"];
   const canvas = document.getElementById("battle-view");
-  const menuUI = document.getElementById("party-moves")
+  const enemiesUi = document.getElementById("enemies-ui");
+  const partyUi = document.getElementById("party-ui");
   const theGame = new _game__WEBPACK_IMPORTED_MODULE_1__["default"](canvas)
   canvas.width  = window.innerWidth * 0.85;
   canvas.height = window.innerHeight * 0.80;
-  // menuUI.width  = canvas.width - 50;
-  // menuUI.height = window.innerHeight - canvas.height - 50;
-  const gameRouter = new _game_view__WEBPACK_IMPORTED_MODULE_3__["default"](menuClass, theGame, tutorial, canvas, menuUI)
+  enemiesUi.width  = (canvas.width - 50) * 0.3;
+  enemiesUi.height = window.innerHeight - canvas.height - 50;
+  partyUi.width  = (canvas.width - 50) * 0.3;
+  partyUi.height = window.innerHeight - canvas.height - 50;
+  const gameRouter = new _game_view__WEBPACK_IMPORTED_MODULE_3__["default"](menuClass, theGame, tutorial, canvas, enemiesUi, partyUi)
 
   let i = 0
   let titleScreenBool = true

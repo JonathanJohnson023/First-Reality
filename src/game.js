@@ -34,10 +34,10 @@ export default class Game {
   }
 
   start(){
-    const knight = new Sprite("knight", this.ctx, null, 0);
-    const cleric = new Sprite("cleric", this.ctx, null, 1);
-    const archer = new Sprite("archer", this.ctx, null, 2);
-    const wizard = new Sprite("wizard", this.ctx, null, 3);
+    const knight = new Sprite("Knight", this.ctx, null, 0);
+    const cleric = new Sprite("Cleric", this.ctx, null, 1);
+    const archer = new Sprite("Archer", this.ctx, null, 2);
+    const wizard = new Sprite("Wizard", this.ctx, null, 3);
     this.party.push(knight, cleric, archer, wizard);
   } 
   
