@@ -202,7 +202,8 @@ class Game {
     this.ctx = ctx;
     this.frame = 0
     this.aniDone = false
-    
+    this.partyMenu;
+
     this.draw = this.draw.bind(this);
     this.charIndexIncrease = this.charIndexIncrease.bind(this);
   }
@@ -469,6 +470,7 @@ class Menu {
 
   selectMouseOver(e){
     e.preventDefault();
+    debugger
     if(e.target.parentNode.id == 'menu'){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);

@@ -10,7 +10,8 @@ export default class Game {
     this.ctx = ctx;
     this.frame = 0
     this.aniDone = false
-    
+    this.partyMenu;
+
     this.draw = this.draw.bind(this);
     this.charIndexIncrease = this.charIndexIncrease.bind(this);
   }

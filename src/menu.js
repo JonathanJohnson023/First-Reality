@@ -27,6 +27,7 @@ export default class Menu {
 
   selectMouseOver(e){
     e.preventDefault();
+    debugger
     if(e.target.parentNode.id == 'menu'){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);
