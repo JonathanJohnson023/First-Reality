@@ -5,16 +5,19 @@ import GameView from "./game_view"
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const menuClass = new Menu('#menu li')
-  const tutorial = new Instructions
+  const menuClass = new Menu('#menu li', "menu");
+  const tutorial = new Instructions;
   const canvas = document.getElementById("battle-view");
-  const menuUI = document.getElementById("party-moves")
-  const theGame = new Game(canvas)
+  const enemiesUi = document.getElementById("enemies-ui");
+  const partyUi = document.getElementById("party-ui");
+  const theGame = new Game(canvas);
   canvas.width  = window.innerWidth * 0.85;
   canvas.height = window.innerHeight * 0.80;
-  // menuUI.width  = canvas.width - 50;
-  // menuUI.height = window.innerHeight - canvas.height - 50;
-  const gameRouter = new GameView(menuClass, theGame, tutorial, canvas, menuUI)
+  enemiesUi.width  = (canvas.width - 50) * 0.3;
+  enemiesUi.height = window.innerHeight - canvas.height - 50;
+  partyUi.width  = (canvas.width - 50) * 0.3;
+  partyUi.height = window.innerHeight - canvas.height - 50;
+  const gameRouter = new GameView(menuClass, theGame, tutorial, canvas, enemiesUi, partyUi)
 
   let i = 0
   let titleScreenBool = true

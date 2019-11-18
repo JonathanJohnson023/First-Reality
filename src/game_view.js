@@ -42,7 +42,7 @@ export default class GameRouter {
         this.title.classList.add("none");
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
-        this.game.start();
+        this.game.start(this.menu);
       }, {once: true})
       requestAnimationFrame(this.gameAnimate.bind(this));
 
@@ -51,15 +51,17 @@ export default class GameRouter {
       this.tutorial.start(menu)
     }else{
     }
-    this.game.onSelect()
+    // this.game.onSelect()
   }
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
     this.time++
     // this.game.step(timeDelta);
-    if(this.time > 15){
-      if(this.game.aniDone) this.game.frame++
+    if(this.time > 20){
+      if(this.game.aniDone){ 
+        this.game.frame++
+      }
       this.time = 0
       this.game.draw();
     }

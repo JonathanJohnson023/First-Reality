@@ -99,7 +99,8 @@ __webpack_require__.r(__webpack_exports__);
 class Character {
   constructor(job, ctx, sprite, index){
     this.level = 1;
-    this.health = 100;
+    this.maxHealth = 100
+    this.health = this.maxHealth;
     this.KO = false;
     this.job = job;
     this.ctx = ctx
@@ -108,6 +109,8 @@ class Character {
     this.frame = 0;
     this.forward = false;
     this.back = false;
+    this.partyHpUi = document.getElementById("party-ui").getContext("2d");
+    this.partyHpUi.font = "26px Final Fantasy"
     this.spriteHeight(index)
     this.canvasX = this.ctx.canvas.width * 0.85
     this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 
@@ -126,10 +129,12 @@ class Character {
     }else{
       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX, this.canvasY , 125, 125 )
     }
+    this.partyHpUi.fillText(this.job, 25, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
+    this.partyHpUi.fillText(`${this.health} / ${this.maxHealth}`, this.partyHpUi.canvas.width - 125, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
+
   }
 
   walkForward(callback){
-    debugger
     this.frame++
     if(this.isOdd(this.frame)){
       this.ctx.drawImage(this.sprite, 64, 0, 64, 64, this.canvasX -= parseInt(this.frame + "0"), this.canvasY , 125, 125 )
@@ -195,9 +200,10 @@ class Game {
     this.currentChar = null;
     this.currentCharIndex = 0;
     this.ctx = ctx;
-    this.frame = 0
-    this.aniDone = false
-    
+    this.frame = 0;
+    this.aniDone = false;
+    this.partyMenu = new _menu__WEBPACK_IMPORTED_MODULE_1__["default"]("#party-moves li", "party-moves");
+
     this.draw = this.draw.bind(this);
     this.charIndexIncrease = this.charIndexIncrease.bind(this);
   }
@@ -217,16 +223,35 @@ class Game {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
       this.aniDone = true;
+      this.currentChar.forward = true;
     })
   }
 
-  start(){
-    const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("knight", this.ctx, null, 0);
-    const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("cleric", this.ctx, null, 1);
-    const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("archer", this.ctx, null, 2);
-    const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("wizard", this.ctx, null, 3);
+  start(titleMenu){
+    const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Knight", this.ctx, null, 0);
+    const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Cleric", this.ctx, null, 1);
+    const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Archer", this.ctx, null, 2);
+    const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Wizard", this.ctx, null, 3);
     this.party.push(knight, cleric, archer, wizard);
+    // document.removeEventListener("keydown")
+    const menu = document.getElementById("party-moves");
+    menu.addEventListener('mouseover', this.partyMenu.selectMouseOver);
+    menu.addEventListener('click', (e) => { this.partySelectEventCallback(e) });
+    document.addEventListener('keydown', (e) => { this.partySelectEventCallback(e) });
   } 
+
+  partySelectEventCallback(e){
+    const menu = document.getElementById("party-moves")
+    if(e.keyCode == 13 && !menu.classList.contains("none")){
+      this.onSelect(this.partyMenu.keyPressed(e));
+    }else if(e.type == "click"){
+      this.onSelect(this.partyMenu.selectMouseClick(e));
+    }else{
+      return this.partyMenu.keyPressed(e)
+    }
+  }
+
+
   
   drawBackground(){
     const background = new Image()
@@ -245,7 +270,8 @@ class Game {
     })
   }
 
-  onSelect(){
+  onSelect(selection){
+    debugger 
     this.currentChar.back = false;
     this.currentChar.forward = true;
     if(this.currentCharIndex > 0){
@@ -325,7 +351,7 @@ class GameRouter {
         this.title.classList.add("none");
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
-        this.game.start();
+        this.game.start(this.menu);
       }, {once: true})
       requestAnimationFrame(this.gameAnimate.bind(this));
 
@@ -334,15 +360,17 @@ class GameRouter {
       this.tutorial.start(menu)
     }else{
     }
-    this.game.onSelect()
+    // this.game.onSelect()
   }
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
     this.time++
     // this.game.step(timeDelta);
-    if(this.time > 15){
-      if(this.game.aniDone) this.game.frame++
+    if(this.time > 20){
+      if(this.game.aniDone){ 
+        this.game.frame++
+      }
       this.time = 0
       this.game.draw();
     }
@@ -378,16 +406,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const menuClass = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]('#menu li')
-  const tutorial = new _tutorial__WEBPACK_IMPORTED_MODULE_2__["default"]
+  const menuClass = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]('#menu li', "menu");
+  const tutorial = new _tutorial__WEBPACK_IMPORTED_MODULE_2__["default"];
   const canvas = document.getElementById("battle-view");
-  const menuUI = document.getElementById("party-moves")
-  const theGame = new _game__WEBPACK_IMPORTED_MODULE_1__["default"](canvas)
+  const enemiesUi = document.getElementById("enemies-ui");
+  const partyUi = document.getElementById("party-ui");
+  const theGame = new _game__WEBPACK_IMPORTED_MODULE_1__["default"](canvas);
   canvas.width  = window.innerWidth * 0.85;
   canvas.height = window.innerHeight * 0.80;
-  // menuUI.width  = canvas.width - 50;
-  // menuUI.height = window.innerHeight - canvas.height - 50;
-  const gameRouter = new _game_view__WEBPACK_IMPORTED_MODULE_3__["default"](menuClass, theGame, tutorial, canvas, menuUI)
+  enemiesUi.width  = (canvas.width - 50) * 0.3;
+  enemiesUi.height = window.innerHeight - canvas.height - 50;
+  partyUi.width  = (canvas.width - 50) * 0.3;
+  partyUi.height = window.innerHeight - canvas.height - 50;
+  const gameRouter = new _game_view__WEBPACK_IMPORTED_MODULE_3__["default"](menuClass, theGame, tutorial, canvas, enemiesUi, partyUi)
 
   let i = 0
   let titleScreenBool = true
@@ -433,8 +464,9 @@ document.addEventListener("DOMContentLoaded", () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Menu; });
 class Menu {
-  constructor(querySelec){
+  constructor(querySelec, menuId){
     this.tokenMenu = 0
+    this.menuId = menuId
 
     this.cursor = document.createElement('img');
       this.cursor.className = 'selected';
@@ -461,7 +493,8 @@ class Menu {
 
   selectMouseOver(e){
     e.preventDefault();
-    if(e.target.parentNode.id == 'menu'){
+    debugger
+    if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);
       this.cursorMove.play();
@@ -470,7 +503,7 @@ class Menu {
 
   selectMouseClick(e){
     e.preventDefault();
-    if(e.target.parentNode.id == 'menu'){
+    if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.cursorSelect.play();
       return this.menuItems[this.tokenMenu]
@@ -479,6 +512,7 @@ class Menu {
 
   keyPressed(e){
     e.preventDefault();
+    debugger
     if(e.keyCode == 38){  //ArrowUp
       this.tokenMenu > 0 ? this.tokenMenu -=1 : this.tokenMenu = 1
       this.selection(this.tokenMenu);
