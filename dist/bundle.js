@@ -223,7 +223,7 @@ class Game {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
       this.aniDone = true;
-      this.currentChar.forward = true;
+       if(this.currentChar) this.currentChar.forward = true;
     })
   }
 
@@ -367,7 +367,7 @@ class GameRouter {
     // const timeDelta = time - this.lastTime;
     this.time++
     // this.game.step(timeDelta);
-    if(this.time > 20){
+    if(this.time > 17){
       if(this.game.aniDone){ 
         this.game.frame++
       }
