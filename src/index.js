@@ -5,12 +5,12 @@ import GameView from "./game_view"
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const menuClass = new Menu('#menu li');
+  const menuClass = new Menu('#menu li', "menu");
   const tutorial = new Instructions;
   const canvas = document.getElementById("battle-view");
   const enemiesUi = document.getElementById("enemies-ui");
   const partyUi = document.getElementById("party-ui");
-  const theGame = new Game(canvas)
+  const theGame = new Game(canvas);
   canvas.width  = window.innerWidth * 0.85;
   canvas.height = window.innerHeight * 0.80;
   enemiesUi.width  = (canvas.width - 50) * 0.3;

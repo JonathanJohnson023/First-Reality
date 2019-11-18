@@ -200,9 +200,9 @@ class Game {
     this.currentChar = null;
     this.currentCharIndex = 0;
     this.ctx = ctx;
-    this.frame = 0
-    this.aniDone = false
-    this.partyMenu;
+    this.frame = 0;
+    this.aniDone = false;
+    this.partyMenu = new _menu__WEBPACK_IMPORTED_MODULE_1__["default"]("#party-moves li", "party-moves");
 
     this.draw = this.draw.bind(this);
     this.charIndexIncrease = this.charIndexIncrease.bind(this);
@@ -223,16 +223,35 @@ class Game {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
       this.aniDone = true;
+      this.currentChar.forward = true;
     })
   }
 
-  start(){
+  start(titleMenu){
     const knight = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Knight", this.ctx, null, 0);
     const cleric = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Cleric", this.ctx, null, 1);
     const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Archer", this.ctx, null, 2);
     const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Wizard", this.ctx, null, 3);
     this.party.push(knight, cleric, archer, wizard);
+    // document.removeEventListener("keydown")
+    const menu = document.getElementById("party-moves");
+    menu.addEventListener('mouseover', this.partyMenu.selectMouseOver);
+    menu.addEventListener('click', (e) => { this.partySelectEventCallback(e) });
+    document.addEventListener('keydown', (e) => { this.partySelectEventCallback(e) });
   } 
+
+  partySelectEventCallback(e){
+    const menu = document.getElementById("party-moves")
+    if(e.keyCode == 13 && !menu.classList.contains("none")){
+      this.onSelect(this.partyMenu.keyPressed(e));
+    }else if(e.type == "click"){
+      this.onSelect(this.partyMenu.selectMouseClick(e));
+    }else{
+      return this.partyMenu.keyPressed(e)
+    }
+  }
+
+
   
   drawBackground(){
     const background = new Image()
@@ -251,7 +270,8 @@ class Game {
     })
   }
 
-  onSelect(){
+  onSelect(selection){
+    debugger 
     this.currentChar.back = false;
     this.currentChar.forward = true;
     if(this.currentCharIndex > 0){
@@ -331,7 +351,7 @@ class GameRouter {
         this.title.classList.add("none");
         titleAudio.pause();      
         document.getElementById("battleView").classList.remove("none");
-        this.game.start();
+        this.game.start(this.menu);
       }, {once: true})
       requestAnimationFrame(this.gameAnimate.bind(this));
 
@@ -340,15 +360,17 @@ class GameRouter {
       this.tutorial.start(menu)
     }else{
     }
-    this.game.onSelect()
+    // this.game.onSelect()
   }
 
   gameAnimate(time) {
     // const timeDelta = time - this.lastTime;
     this.time++
     // this.game.step(timeDelta);
-    if(this.time > 15){
-      if(this.game.aniDone) this.game.frame++
+    if(this.time > 20){
+      if(this.game.aniDone){ 
+        this.game.frame++
+      }
       this.time = 0
       this.game.draw();
     }
@@ -384,12 +406,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const menuClass = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]('#menu li');
+  const menuClass = new _menu__WEBPACK_IMPORTED_MODULE_0__["default"]('#menu li', "menu");
   const tutorial = new _tutorial__WEBPACK_IMPORTED_MODULE_2__["default"];
   const canvas = document.getElementById("battle-view");
   const enemiesUi = document.getElementById("enemies-ui");
   const partyUi = document.getElementById("party-ui");
-  const theGame = new _game__WEBPACK_IMPORTED_MODULE_1__["default"](canvas)
+  const theGame = new _game__WEBPACK_IMPORTED_MODULE_1__["default"](canvas);
   canvas.width  = window.innerWidth * 0.85;
   canvas.height = window.innerHeight * 0.80;
   enemiesUi.width  = (canvas.width - 50) * 0.3;
@@ -442,8 +464,9 @@ document.addEventListener("DOMContentLoaded", () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Menu; });
 class Menu {
-  constructor(querySelec){
+  constructor(querySelec, menuId){
     this.tokenMenu = 0
+    this.menuId = menuId
 
     this.cursor = document.createElement('img');
       this.cursor.className = 'selected';
@@ -471,7 +494,7 @@ class Menu {
   selectMouseOver(e){
     e.preventDefault();
     debugger
-    if(e.target.parentNode.id == 'menu'){
+    if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);
       this.cursorMove.play();
@@ -480,7 +503,7 @@ class Menu {
 
   selectMouseClick(e){
     e.preventDefault();
-    if(e.target.parentNode.id == 'menu'){
+    if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.cursorSelect.play();
       return this.menuItems[this.tokenMenu]
@@ -489,6 +512,7 @@ class Menu {
 
   keyPressed(e){
     e.preventDefault();
+    debugger
     if(e.keyCode == 38){  //ArrowUp
       this.tokenMenu > 0 ? this.tokenMenu -=1 : this.tokenMenu = 1
       this.selection(this.tokenMenu);

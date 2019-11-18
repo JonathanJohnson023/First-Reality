@@ -1,6 +1,7 @@
 export default class Menu {
-  constructor(querySelec){
+  constructor(querySelec, menuId){
     this.tokenMenu = 0
+    this.menuId = menuId
 
     this.cursor = document.createElement('img');
       this.cursor.className = 'selected';
@@ -28,7 +29,7 @@ export default class Menu {
   selectMouseOver(e){
     e.preventDefault();
     debugger
-    if(e.target.parentNode.id == 'menu'){
+    if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);
       this.cursorMove.play();
@@ -37,7 +38,7 @@ export default class Menu {
 
   selectMouseClick(e){
     e.preventDefault();
-    if(e.target.parentNode.id == 'menu'){
+    if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.cursorSelect.play();
       return this.menuItems[this.tokenMenu]
@@ -46,6 +47,7 @@ export default class Menu {
 
   keyPressed(e){
     e.preventDefault();
+    debugger
     if(e.keyCode == 38){  //ArrowUp
       this.tokenMenu > 0 ? this.tokenMenu -=1 : this.tokenMenu = 1
       this.selection(this.tokenMenu);
