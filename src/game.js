@@ -31,7 +31,7 @@ export default class Game {
       console.log("why you no animation")
       document.body.style.backgroundColor = "black";
       this.aniDone = true;
-      this.currentChar.forward = true;
+       if(this.currentChar) this.currentChar.forward = true;
     })
   }
 

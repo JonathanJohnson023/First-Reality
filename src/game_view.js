@@ -58,7 +58,7 @@ export default class GameRouter {
     // const timeDelta = time - this.lastTime;
     this.time++
     // this.game.step(timeDelta);
-    if(this.time > 20){
+    if(this.time > 17){
       if(this.game.aniDone){ 
         this.game.frame++
       }
