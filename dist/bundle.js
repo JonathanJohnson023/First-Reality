@@ -144,6 +144,7 @@ class Character {
     if (this.frame == 10){
         callback()
     }
+
   }
 
   walkBack(){
