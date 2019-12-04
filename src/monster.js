@@ -12,8 +12,8 @@ export default class Monster {
     this.monsterHpUi = document.getElementById("enemies-ui").getContext("2d");
     this.monsterHpUi.font = "26px Final Fantasy";
     this.spriteHeight(index)
-    this.canvasX = this.ctx.canvas.width * 0.85
-    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 
+    this.canvasX = this.ctx.canvas.width / 8
+    this.canvasY = this.ctx.canvas.height / this.heightFloat + this.ctx.canvas.height / 3 
 
   };
 

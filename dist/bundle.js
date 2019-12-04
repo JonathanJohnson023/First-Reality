@@ -103,17 +103,17 @@ class Character {
     this.health = this.maxHealth;
     this.KO = false;
     this.job = job;
-    this.ctx = ctx
+    this.ctx = ctx;
     this.sprite = sprite;
     this.index = index;
     this.frame = 0;
     this.forward = false;
     this.back = false;
     this.partyHpUi = document.getElementById("party-ui").getContext("2d");
-    this.partyHpUi.font = "26px Final Fantasy"
-    this.spriteHeight(index)
-    this.canvasX = this.ctx.canvas.width * 0.85
-    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3 
+    this.partyHpUi.font = "26px Final Fantasy";
+    this.spriteHeight(index);
+    this.canvasX = this.ctx.canvas.width * 0.85;
+    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height * 0.3;
 
   }
 
@@ -221,7 +221,6 @@ class Game {
     this.addSprites();
     
     document.body.addEventListener("animationend" , () => {
-      console.log("why you no animation")
       document.body.style.backgroundColor = "black";
       this.aniDone = true;
        if(this.currentChar) this.currentChar.forward = true;
@@ -557,7 +556,6 @@ class Tutorial{
   }
 
   start(){
-    console.log("hello from derp you derp")
     console.log(this.menu)
     this.menu
   }

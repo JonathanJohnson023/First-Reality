@@ -4,7 +4,6 @@ export default class Tutorial{
   }
 
   start(){
-    console.log("hello from derp you derp")
     console.log(this.menu)
     this.menu
   }

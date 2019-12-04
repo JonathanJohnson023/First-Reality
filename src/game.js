@@ -28,7 +28,6 @@ export default class Game {
     this.addSprites();
     
     document.body.addEventListener("animationend" , () => {
-      console.log("why you no animation")
       document.body.style.backgroundColor = "black";
       this.aniDone = true;
        if(this.currentChar) this.currentChar.forward = true;
