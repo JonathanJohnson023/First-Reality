@@ -190,7 +190,9 @@ class Character {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Game; });
 /* harmony import */ var _char__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./char */ "./src/char.js");
-/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
+/* harmony import */ var _monster__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./monster */ "./src/monster.js");
+/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./menu */ "./src/menu.js");
+
 
 
 class Game {
@@ -203,7 +205,8 @@ class Game {
     this.ctx = ctx;
     this.frame = 0;
     this.aniDone = false;
-    this.partyMenu = new _menu__WEBPACK_IMPORTED_MODULE_1__["default"]("#party-moves li", "party-moves");
+    this.partyMenu = new _menu__WEBPACK_IMPORTED_MODULE_2__["default"]("#party-moves li", "party-moves");
+    this.wave = 0;
 
     this.draw = this.draw.bind(this);
     this.charIndexIncrease = this.charIndexIncrease.bind(this);
@@ -219,7 +222,7 @@ class Game {
     
     this.drawBackground();
     this.addSprites();
-    
+    this.drawMonsters();
     document.body.addEventListener("animationend" , () => {
       document.body.style.backgroundColor = "black";
       this.aniDone = true;
@@ -233,11 +236,14 @@ class Game {
     const archer = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Archer", this.ctx, null, 2);
     const wizard = new _char__WEBPACK_IMPORTED_MODULE_0__["default"]("Wizard", this.ctx, null, 3);
     this.party.push(knight, cleric, archer, wizard);
+    this.addEnemy()
+    // this.createMonsters();
     // document.removeEventListener("keydown")
     const menu = document.getElementById("party-moves");
     menu.addEventListener('mouseover', this.partyMenu.selectMouseOver);
     menu.addEventListener('click', (e) => { this.partySelectEventCallback(e) });
     document.addEventListener('keydown', (e) => { this.partySelectEventCallback(e) });
+    
   } 
 
   partySelectEventCallback(e){
@@ -268,19 +274,30 @@ class Game {
     })
   }
 
+  drawMonsters(){
+    this.enemies.forEach((obj, index) => {
+      obj.draw();
+    })
+  }
+
   onSelect(selection){
     this.currentChar.back = false;
     this.currentChar.forward = true;
     if(this.currentCharIndex > 0){
       this.party[this.currentCharIndex - 1].back = true
       this.party[this.currentCharIndex - 1].forward = false;
-    } else{
+    } else {
       this.party[3].back = true;
       this.party[3].forward = false;
     }
   }
 
   addEnemy(){
+    const numEnemies = Math.floor(Math.random() * 4) + 1
+    for (let index = 0; index < numEnemies; index++){
+      const monster = new _monster__WEBPACK_IMPORTED_MODULE_1__["default"](this.ctx, index);
+      this.enemies.push(monster)
+    }
 
   }
 
@@ -490,7 +507,6 @@ class Menu {
 
   selectMouseOver(e){
     e.preventDefault();
-    debugger
     if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);
@@ -509,7 +525,6 @@ class Menu {
 
   keyPressed(e){
     e.preventDefault();
-    debugger
     if(e.keyCode == 38){  //ArrowUp
       this.tokenMenu > 0 ? this.tokenMenu -=1 : this.tokenMenu = 1
       this.selection(this.tokenMenu);
@@ -534,6 +549,67 @@ class Menu {
   }
 
 }
+
+/***/ }),
+
+/***/ "./src/monster.js":
+/*!************************!*\
+  !*** ./src/monster.js ***!
+  \************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Monster; });
+class Monster {
+  constructor(ctx, index){
+    this.level = 1;
+    this.maxHealth = 100;
+    this.health = this.maxHealth;
+    this.KO = false;
+    // this.type = type;
+    this.ctx = ctx;
+    this.sprite = new Image();
+      this.sprite.src = "Final_Fantasy_1_Enemies & Bosses.png"
+    this.index = index;
+    this.frame = 0;
+    this.monsterHpUi = document.getElementById("enemies-ui").getContext("2d");
+    this.monsterHpUi.font = "26px Final Fantasy";
+    this.spriteHeight(index)
+    this.canvasX = this.ctx.canvas.width / 8
+    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height / 3 
+
+    this.smallMonsters = [
+      [0, 0, 36, 64]
+    ]
+
+    this.medMonsters = [
+
+    ]
+    
+  };
+
+
+  draw(){
+    this.ctx.drawImage(this.sprite, ...this.smallMonsters[0], this.canvasX, this.canvasY, 125, 125)
+  }
+
+
+
+
+
+  spriteHeight(int){
+    let numFloat = int + int * 0.5
+    let num = Number(numFloat.toString().replace('.',''))
+    this.heightFloat = parseFloat(`0.${num}`)
+  }
+
+}
+
+
+
+
 
 /***/ }),
 
