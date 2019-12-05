@@ -57,8 +57,6 @@ export default class Game {
       return this.partyMenu.keyPressed(e)
     }
   }
-
-
   
   drawBackground(){
     const background = new Image()
@@ -78,7 +76,6 @@ export default class Game {
   }
 
   onSelect(selection){
-    debugger 
     this.currentChar.back = false;
     this.currentChar.forward = true;
     if(this.currentCharIndex > 0){

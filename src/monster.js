@@ -15,11 +15,20 @@ export default class Monster {
     this.canvasX = this.ctx.canvas.width / 8
     this.canvasY = this.ctx.canvas.height / this.heightFloat + this.ctx.canvas.height / 3 
 
+
+
+    this.smallMonsters = [
+      [0, 0, 64, 64]
+    ]
+    this.medMonsters = [
+
+    ]
   };
 
 
   draw(){
-    
+    this.ctx.drawImage(this.sprite, this.smallMonsters[0], this.canvasX, this.canvasY )
+  
   }
 
 
