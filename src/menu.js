@@ -28,7 +28,6 @@ export default class Menu {
 
   selectMouseOver(e){
     e.preventDefault();
-    debugger
     if(e.target.parentNode.id == this.menuId){
       this.tokenMenu = parseInt(e.target.getAttribute("number"));
       this.selection(this.tokenMenu);
@@ -47,7 +46,6 @@ export default class Menu {
 
   keyPressed(e){
     e.preventDefault();
-    debugger
     if(e.keyCode == 38){  //ArrowUp
       this.tokenMenu > 0 ? this.tokenMenu -=1 : this.tokenMenu = 1
       this.selection(this.tokenMenu);
