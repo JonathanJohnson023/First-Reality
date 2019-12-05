@@ -17,7 +17,7 @@ export default class Monster {
     this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height / 3.5 
 
     this.smallMonsters = [
-      [0, 0, 36, 64]
+      [36, 0, 36, 64]
     ]
 
     this.medMonsters = [
@@ -35,7 +35,7 @@ export default class Monster {
   }
 
   death(){
-    
+
   }
 
 

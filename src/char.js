@@ -68,7 +68,7 @@ export default class Character {
   // }
 
   attack(monster){
-    console.log(monster);
+    // console.log(monster);
     monster.health -= 25;
   }
 
