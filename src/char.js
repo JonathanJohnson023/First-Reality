@@ -31,6 +31,7 @@ export default class Character {
     }else{
       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX, this.canvasY , 125, 125 )
     }
+    this.partyHpUi.clearRect(0, (this.index) * (this.partyHpUi.canvas.height / 4), this.partyHpUi.canvas.width, this.partyHpUi.canvas.height)
     this.partyHpUi.fillText(this.job, 25, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
     this.partyHpUi.fillText(`${this.health} / ${this.maxHealth}`, this.partyHpUi.canvas.width - 125, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
 
@@ -66,8 +67,9 @@ export default class Character {
   //     }
   // }
 
-  attack(){
-
+  attack(monster){
+    console.log(monster);
+    monster.health -= 25;
   }
 
   spriteHeight(int){

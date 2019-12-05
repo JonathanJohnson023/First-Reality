@@ -49,11 +49,12 @@ export default class Game {
     menu.addEventListener('mouseover', this.partyMenu.selectMouseOver);
     menu.addEventListener('click', (e) => { this.partySelectEventCallback(e) });
     document.addEventListener('keydown', (e) => { this.partySelectEventCallback(e) });
-    
-  } 
+    this.partyMenu.selection(0);
+
+  }
 
   partySelectEventCallback(e){
-    const menu = document.getElementById("party-moves")
+    const menu = document.getElementById("party-moves");
     if(e.keyCode == 13 && !menu.classList.contains("none")){
       this.onSelect(this.partyMenu.keyPressed(e));
     }else if(e.type == "click"){
@@ -61,7 +62,7 @@ export default class Game {
     }else{
       return this.partyMenu.keyPressed(e)
     }
-  }
+  };
   
   drawBackground(){
     const background = new Image()
@@ -89,6 +90,7 @@ export default class Game {
   onSelect(selection){
     this.currentChar.back = false;
     this.currentChar.forward = true;
+    this.currentChar.attack(this.enemies[Math.floor(Math.random() * this.enemies.length)]);
     if(this.currentCharIndex > 0){
       this.party[this.currentCharIndex - 1].back = true
       this.party[this.currentCharIndex - 1].forward = false;

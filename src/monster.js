@@ -14,7 +14,7 @@ export default class Monster {
     this.monsterHpUi.font = "26px Final Fantasy";
     this.spriteHeight(index)
     this.canvasX = this.ctx.canvas.width / 8
-    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height / 3 
+    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height / 3.5 
 
     this.smallMonsters = [
       [0, 0, 36, 64]
@@ -23,15 +23,20 @@ export default class Monster {
     this.medMonsters = [
 
     ]
-    
+
   };
 
 
   draw(){
-    this.ctx.drawImage(this.sprite, ...this.smallMonsters[0], this.canvasX, this.canvasY, 125, 125)
+    this.ctx.drawImage(this.sprite, ...this.smallMonsters[0], this.canvasX, this.canvasY, 125, 200)
+    this.monsterHpUi.clearRect(0, (this.index) * (this.monsterHpUi.canvas.height / 4), this.monsterHpUi.canvas.width, this.monsterHpUi.canvas.height)
+    this.monsterHpUi.fillText(`Monster ${this.index + 1}`, 25, (this.index + 1) * (this.monsterHpUi.canvas.height / 4))
+    this.monsterHpUi.fillText(`${this.health} / ${this.maxHealth}`, this.monsterHpUi.canvas.width - 125, (this.index + 1) * (this.monsterHpUi.canvas.height / 4))
   }
 
-
+  death(){
+    
+  }
 
 
 

@@ -129,6 +129,7 @@ class Character {
     }else{
       this.ctx.drawImage(this.sprite, 0, 0, 64, 64, this.canvasX, this.canvasY , 125, 125 )
     }
+    this.partyHpUi.clearRect(0, (this.index) * (this.partyHpUi.canvas.height / 4), this.partyHpUi.canvas.width, this.partyHpUi.canvas.height)
     this.partyHpUi.fillText(this.job, 25, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
     this.partyHpUi.fillText(`${this.health} / ${this.maxHealth}`, this.partyHpUi.canvas.width - 125, (this.index + 1) * (this.partyHpUi.canvas.height / 4))
 
@@ -164,8 +165,9 @@ class Character {
   //     }
   // }
 
-  attack(){
-
+  attack(monster){
+    console.log(monster);
+    monster.health -= 25;
   }
 
   spriteHeight(int){
@@ -243,11 +245,12 @@ class Game {
     menu.addEventListener('mouseover', this.partyMenu.selectMouseOver);
     menu.addEventListener('click', (e) => { this.partySelectEventCallback(e) });
     document.addEventListener('keydown', (e) => { this.partySelectEventCallback(e) });
-    
-  } 
+    this.partyMenu.selection(0);
+
+  }
 
   partySelectEventCallback(e){
-    const menu = document.getElementById("party-moves")
+    const menu = document.getElementById("party-moves");
     if(e.keyCode == 13 && !menu.classList.contains("none")){
       this.onSelect(this.partyMenu.keyPressed(e));
     }else if(e.type == "click"){
@@ -255,7 +258,7 @@ class Game {
     }else{
       return this.partyMenu.keyPressed(e)
     }
-  }
+  };
   
   drawBackground(){
     const background = new Image()
@@ -283,6 +286,7 @@ class Game {
   onSelect(selection){
     this.currentChar.back = false;
     this.currentChar.forward = true;
+    this.currentChar.attack(this.enemies[Math.floor(Math.random() * this.enemies.length)]);
     if(this.currentCharIndex > 0){
       this.party[this.currentCharIndex - 1].back = true
       this.party[this.currentCharIndex - 1].forward = false;
@@ -578,7 +582,7 @@ class Monster {
     this.monsterHpUi.font = "26px Final Fantasy";
     this.spriteHeight(index)
     this.canvasX = this.ctx.canvas.width / 8
-    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height / 3 
+    this.canvasY = this.ctx.canvas.height * this.heightFloat + this.ctx.canvas.height / 3.5 
 
     this.smallMonsters = [
       [0, 0, 36, 64]
@@ -587,15 +591,20 @@ class Monster {
     this.medMonsters = [
 
     ]
-    
+
   };
 
 
   draw(){
-    this.ctx.drawImage(this.sprite, ...this.smallMonsters[0], this.canvasX, this.canvasY, 125, 125)
+    this.ctx.drawImage(this.sprite, ...this.smallMonsters[0], this.canvasX, this.canvasY, 125, 200)
+    this.monsterHpUi.clearRect(0, (this.index) * (this.monsterHpUi.canvas.height / 4), this.monsterHpUi.canvas.width, this.monsterHpUi.canvas.height)
+    this.monsterHpUi.fillText(`Monster ${this.index + 1}`, 25, (this.index + 1) * (this.monsterHpUi.canvas.height / 4))
+    this.monsterHpUi.fillText(`${this.health} / ${this.maxHealth}`, this.monsterHpUi.canvas.width - 125, (this.index + 1) * (this.monsterHpUi.canvas.height / 4))
   }
 
-
+  death(){
+    
+  }
 
 
 
