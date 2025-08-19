@@ -1,0 +1,223 @@
+/* Mobile Responsive Design */
+
+/* Touch-friendly controls */
+@media (max-width: 768px) {
+  /* Title Screen Mobile */
+  .title-logo {
+    font-size: 60px !important;
+    margin-left: -200px !important;
+  }
+  
+  #press-start > h1 {
+    font-size: 28px !important;
+    top: 50px !important;
+  }
+  
+  #title-center-box {
+    bottom: 150px !important;
+  }
+  
+  #menu {
+    width: 200px !important;
+    padding: 8px 0px 8px 30px !important;
+  }
+  
+  #menu li {
+    font-size: 24px !important;
+    line-height: 35px !important;
+  }
+  
+  /* Battle View Mobile */
+  #battle-view {
+    width: 100% !important;
+    height: 60vh !important;
+  }
+  
+  .battle-ui {
+    position: fixed !important;
+    bottom: 10px !important;
+    width: calc(50% - 15px) !important;
+    padding: 8px 0px 8px 20px !important;
+  }
+  
+  #party-moves {
+    left: 10px !important;
+    width: calc(50% - 15px) !important;
+    height: auto !important;
+  }
+  
+  #party-moves li {
+    font-size: 20px !important;
+    line-height: 30px !important;
+    padding: 6px 0 !important;
+  }
+  
+  #party-ui, #enemies-ui {
+    width: calc(50% - 15px) !important;
+    height: 120px !important;
+  }
+  
+  #party-ui {
+    right: 10px !important;
+  }
+  
+  #enemies-ui {
+    left: 10px !important;
+    bottom: 140px !important;
+  }
+}
+
+/* Touch Controls */
+.touch-control {
+  display: none;
+  position: fixed;
+  background: rgba(0, 4, 70, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-family: 'Final Fantasy', monospace;
+  font-size: 16px;
+  padding: 12px 20px;
+  z-index: 1001;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.touch-control:active {
+  transform: scale(0.95);
+  background: rgba(0, 4, 70, 0.9);
+}
+
+@media (max-width: 768px) {
+  .touch-control {
+    display: block;
+  }
+  
+  /* Touch D-Pad */
+  .touch-dpad {
+    bottom: 20px;
+    left: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  
+  .touch-dpad-btn {
+    background: rgba(0, 4, 70, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  
+  .touch-dpad-btn:active {
+    transform: scale(0.9);
+    background: rgba(0, 4, 70, 0.9);
+  }
+  
+  .touch-dpad-up { grid-column: 2; grid-row: 1; }
+  .touch-dpad-left { grid-column: 1; grid-row: 2; }
+  .touch-dpad-right { grid-column: 3; grid-row: 2; }
+  .touch-dpad-down { grid-column: 2; grid-row: 3; }
+  
+  /* Touch Action Buttons */
+  .touch-action {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .touch-enter {
+    bottom: 80px;
+    right: 20px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+  }
+  
+  .touch-back {
+    bottom: 140px;
+    right: 20px;
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .title-logo {
+    font-size: 80px !important;
+    margin-left: -300px !important;
+  }
+  
+  #battle-view {
+    width: 90% !important;
+    height: 70vh !important;
+  }
+  
+  .battle-ui {
+    width: 40% !important;
+  }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .title-logo {
+    font-size: 50px !important;
+    top: 15% !important;
+  }
+  
+  #title-center-box {
+    bottom: 80px !important;
+  }
+  
+  #battle-view {
+    height: 50vh !important;
+  }
+  
+  .battle-ui {
+    bottom: 5px !important;
+    height: 80px !important;
+  }
+  
+  #enemies-ui {
+    bottom: 90px !important;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .title-logo {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .battle-ui {
+    border-width: 1px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .touch-control {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

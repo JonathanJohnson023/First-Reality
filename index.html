@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<head>
+  <title>First Reality</title>
+  <link rel="shortcut icon" type="image/x-icon" href="first_reality_ff.png" />
+  <script type="text/javascript" src="./dist/bundle.js" charset="utf-8" defer></script>
+  <link rel="stylesheet" href="./styles/css/app.css">	 
+</head>
+<body>
+
+  <!-- Menu  --> <!-- The landing page menu will have a how to play button and a start game -->
+  
+    <div id="title-screen-text-wrapper" class="main-title-screen appearing show">
+      <h1 class="title-logo">FIRST REALITY</h1>
+      <div id="title-screen-controller" class="show">
+        <div id="press-start" class="title-screen-appearing">
+          <h1>Press Enter</h1>
+        </div>
+      </div>
+  
+      <div id="title-screen-menu" class="none">
+          <audio contenteditable="false" id="title-audio" loop="true" preload="auto" muted>
+            <source src="./assets/FinalFantasyPrelude.mp3">
+          </audio>
+          
+          <!-- Volume Controls -->
+          <div id="volume-controls">
+            <label for="volume-slider">Volume:</label>
+            <input type="range" id="volume-slider" min="0" max="100" value="30" />
+            <span id="volume-display">30%</span>
+            <button id="mute-toggle">🔊</button>
+          </div>
+          <!-- <iframe width="0" height="0" scrolling="no" frameborder="no" 
+          src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/18084454&amp;auto_play=true&amp;hide_related=false&amp;visual=true">
+          </iframe> -->
+        <div id="title-center-box">
+            <ul id="menu">
+              <li number ="0">Start Game</li>
+              <li number ="1">How To Play</li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  <!-- Menu  -->
+
+  <!-- Overworld --> <!-- the transistion area-->
+  <section id="map" class="none">
+    <div class="background">
+      <div class="party"></div> <!-- the party sprites -->
+    </div>
+  </section>
+  <!-- Overworld -->
+
+  <!-- BATTLE -->
+  <div id="battleView" class="none">
+    <canvas id="battle-view"></canvas>
+    <canvas id="enemies-ui" class="battle-ui"></canvas>
+    <ul id="party-moves" class="battle-ui">
+      <li number="0">Attack</li>
+      <li number="1">Defend</li>
+    </ul>
+    <canvas id="party-ui" class="battle-ui"></canvas>
+    <div id="battle">
+      <div class="main">
+        <div class="enemies">
+
+        </div>
+        <div class="party">
+
+        </div>
+        <div class="input">
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- BATTLE -->
+
+</body>
+</html>
