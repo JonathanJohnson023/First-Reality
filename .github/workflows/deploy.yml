@@ -6,15 +6,18 @@ on:
   pull_request:
     branches: [ dev, stage, master ]
 
+# Set permissions at workflow level
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: write
+
 jobs:
   # Production deployment (only on master push)
   deploy-production:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
       
     steps:
     - name: Checkout
@@ -32,6 +35,11 @@ jobs:
     - name: Build project
       run: NODE_OPTIONS="--openssl-legacy-provider" npm run build
       
+    - name: Enable GitHub Pages
+      run: |
+        echo "🔧 Ensuring GitHub Pages is properly configured..."
+        # The peaceiris action will handle Pages setup automatically
+        
     - name: Deploy to production
       uses: peaceiris/actions-gh-pages@v4
       with:
@@ -41,6 +49,8 @@ jobs:
         force_orphan: true
         enable_jekyll: false
         commit_message: "🚀 Production deployment"
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
         
     - name: Verify production deployment
       run: |

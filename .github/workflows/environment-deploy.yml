@@ -5,14 +5,17 @@ on:
     types: [closed]
     branches: [ dev, stage, master ]
 
+# Global permissions
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  actions: write
+
 jobs:
   deploy-to-dev:
     if: github.event.pull_request.merged == true && github.base_ref == 'dev'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
       
     steps:
     - name: Checkout
@@ -56,6 +59,8 @@ jobs:
         keep_files: true
         enable_jekyll: false
         commit_message: "🔧 Deploy to dev environment - PR #${{ github.event.number }}"
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
         
     - name: Verify dev deployment
       run: |
@@ -124,6 +129,8 @@ jobs:
         keep_files: true
         enable_jekyll: false
         commit_message: "🚀 Deploy to stage environment - PR #${{ github.event.number }}"
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
         
     - name: Verify stage deployment
       run: |
