@@ -1,0 +1,114 @@
+name: Simple Feature Deploy
+
+on:
+  push:
+    branches: [ 'feature/**', 'cursor/**' ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
+      
+    - name: Build project
+      run: NODE_OPTIONS="--openssl-legacy-provider" npm run build
+      
+    - name: Create simple deployment
+      run: |
+        echo "🚀 Creating simple deployment for testing..."
+        
+        # Create a clean deployment directory
+        rm -rf simple-deploy
+        mkdir simple-deploy
+        
+        # Copy all necessary files
+        cp index.html simple-deploy/
+        cp -r dist/ simple-deploy/
+        cp -r styles/ simple-deploy/
+        cp -r assets/ simple-deploy/
+        cp *.png simple-deploy/
+        
+        # Create .nojekyll
+        touch simple-deploy/.nojekyll
+        
+        # Create a simple test page
+        cat > simple-deploy/test.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Feature Branch Test</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; background: #0f3460; color: white; text-align: center; }
+                .test-link { color: #4CAF50; font-size: 20px; padding: 20px; display: block; margin: 20px 0; }
+                h1 { color: #4CAF50; }
+            </style>
+        </head>
+        <body>
+            <h1>✅ Feature Branch Deployment Working!</h1>
+            <p>Branch: <strong>${{ github.ref_name }}</strong></p>
+            <p>Deployed: <strong>$(date)</strong></p>
+            <a href="./index.html" class="test-link">🎮 Launch Game</a>
+            <p>If you can see this page, the deployment is working!</p>
+        </body>
+        </html>
+        EOF
+        
+        echo "📁 Deployment files:"
+        ls -la simple-deploy/
+        
+    - name: Deploy to separate gh-pages branch
+      run: |
+        # Configure git
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Create or switch to gh-pages-preview branch
+        if git show-ref --verify --quiet refs/remotes/origin/gh-pages-preview; then
+          git checkout gh-pages-preview
+          git rm -rf . || true
+        else
+          git checkout --orphan gh-pages-preview
+          git rm -rf . || true
+        fi
+        
+        # Copy deployment files
+        cp -r simple-deploy/* .
+        
+        # Add and commit
+        git add .
+        git commit -m "🚀 Deploy feature branch ${{ github.ref_name }}"
+        
+        # Push to gh-pages-preview branch
+        git push origin gh-pages-preview --force
+        
+        echo "✅ Deployed to gh-pages-preview branch!"
+        
+    - name: Output URLs
+      run: |
+        echo "🎮 FEATURE BRANCH DEPLOYED!"
+        echo ""
+        echo "📍 Test URLs (wait 5-10 minutes for propagation):"
+        echo "Test Page: https://jonathanjohnson023.github.io/First-Reality/test.html"
+        echo "Main Game: https://jonathanjohnson023.github.io/First-Reality/"
+        echo ""
+        echo "⚠️ Note: This temporarily overwrites the main site for testing"
+        echo "🔄 Merge to master to restore production site"
+        echo ""
+        echo "🧪 TESTING INSTRUCTIONS:"
+        echo "1. Wait 5-10 minutes for GitHub Pages to update"
+        echo "2. Try test page first to verify deployment"
+        echo "3. If test page loads, try the main game"
+        echo "4. Test all world-class features"
+        echo "5. If everything works, merge the PR!"
