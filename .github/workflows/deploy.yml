@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, cursor/improve-app-fix-combat-add-volume-and-mute-e839 ]
   pull_request:
     branches: [ main, master ]
 
@@ -74,12 +74,20 @@ jobs:
         echo "🎉 Build verification complete!"
         
     - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/cursor/improve-app-fix-combat-add-volume-and-mute-e839'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
         exclude_assets: '.github,node_modules,src,*.md,package*.json,webpack.config.js,.gitignore,TODOS.md'
+        
+    - name: Comment deployment URL
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/cursor/improve-app-fix-combat-add-volume-and-mute-e839')
+      run: |
+        echo "🚀 Deployment completed!"
+        echo "🎮 Game URL: https://jonathanjohnson023.github.io/First-Reality"
+        echo "📊 Build artifacts:"
+        ls -la dist/
         
     - name: Deploy Preview (PR)
       if: github.event_name == 'pull_request'
