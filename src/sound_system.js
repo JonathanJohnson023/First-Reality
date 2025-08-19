@@ -364,7 +364,7 @@ export default class SoundSystem {
   getAudioState() {
     return {
       supported: !!this.audioContext,
-      state: this.audioContext?.state || 'unavailable',
+      state: this.audioContext ? this.audioContext.state : 'unavailable',
       masterVolume: this.masterVolume,
       musicVolume: this.musicVolume,
       sfxVolume: this.sfxVolume,

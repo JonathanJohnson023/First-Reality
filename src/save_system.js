@@ -301,7 +301,7 @@ export default class SaveSystem {
     this.autoSaveInterval = setInterval(() => {
       if (gameInstance && gameInstance.getGameData) {
         const gameData = gameInstance.getGameData();
-        if (gameData.settings?.autoSave !== false) {
+        if (gameData.settings && gameData.settings.autoSave !== false) {
           this.saveGame(gameData);
         }
       }
@@ -352,9 +352,9 @@ export default class SaveSystem {
     const saveData = this.loadGame();
     return {
       saveExists: this.hasSaveData(),
-      playerLevel: saveData.player?.level || 1,
-      playtime: this.formatPlaytime(saveData.statistics?.totalPlaytime || 0),
-      battlesWon: saveData.progress?.battlesWon || 0,
+      playerLevel: saveData.player ? saveData.player.level : 1,
+      playtime: this.formatPlaytime(saveData.statistics ? saveData.statistics.totalPlaytime || 0 : 0),
+      battlesWon: saveData.progress ? saveData.progress.battlesWon || 0 : 0,
       lastSaved: new Date(saveData.timestamp || Date.now()).toLocaleString()
     };
   }
