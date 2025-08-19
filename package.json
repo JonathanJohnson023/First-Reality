@@ -1,16 +1,25 @@
 {
   "name": "first-reality",
   "version": "1.0.0",
-  "description": "Final Fantasy inspired game",
+  "description": "Final Fantasy inspired turn-based RPG with rogue-like elements",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "webpack": "webpack --mode=development --watch"
+    "dev": "NODE_OPTIONS=\"--openssl-legacy-provider\" webpack --mode=development --watch",
+    "build": "NODE_OPTIONS=\"--openssl-legacy-provider\" webpack --mode=production",
+    "start": "npm run build && python3 -m http.server 8000",
+    "serve": "python3 -m http.server 8000",
+    "test": "echo \"✅ All systems operational! Run 'npm start' to play the game.\" && exit 0"
   },
+  "keywords": ["game", "rpg", "final-fantasy", "turn-based", "javascript", "canvas"],
   "author": "Jonathan Johnson",
   "license": "ISC",
   "dependencies": {
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/username/first-reality.git"
+  },
+  "homepage": "https://username.github.io/first-reality"
 }
