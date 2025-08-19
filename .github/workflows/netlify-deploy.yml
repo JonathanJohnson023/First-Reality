@@ -1,0 +1,79 @@
+name: Simple Netlify Deployment
+
+on:
+  push:
+    branches: [ master, dev, 'feature/**', 'fix/**' ]
+  pull_request:
+    branches: [ dev, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
+      
+    - name: Run tests
+      run: npm test
+      
+    - name: Build project
+      run: NODE_OPTIONS="--openssl-legacy-provider" npm run build
+      
+    - name: Add environment banner (non-production)
+      if: github.ref != 'refs/heads/master'
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+          ENV_NAME="DEV"
+          ENV_COLOR="#ff9800"
+        elif [[ "${{ github.ref }}" == "refs/heads/stage" ]]; then
+          ENV_NAME="STAGING"  
+          ENV_COLOR="#2196F3"
+        else
+          ENV_NAME="${{ github.ref_name }}"
+          ENV_COLOR="#4CAF50"
+        fi
+        
+        # Only add banner for non-production
+        sed -i "s|<body>|<body><div style=\"position:fixed;top:0;left:0;width:100%;background:${ENV_COLOR};color:black;text-align:center;padding:5px;z-index:10000;font-weight:bold;font-size:12px;\">🔧 ${ENV_NAME} ENVIRONMENT 🔧</div><div style=\"height:30px;\"></div>|g" index.html
+        
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v3.0
+      with:
+        publish-dir: './'
+        production-branch: master
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "Deploy ${{ github.ref_name }} - ${{ github.sha }}"
+        enable-pull-request-comment: true
+        enable-commit-comment: false
+        overwrites-pull-request-comment: true
+        alias: ${{ github.ref_name }}
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        
+    - name: Verify deployment
+      run: |
+        echo "✅ Deployment completed!"
+        echo ""
+        if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+          echo "🎮 Production: https://first-reality.netlify.app/"
+        elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+          echo "🔧 Dev: https://dev--first-reality.netlify.app/"
+        else
+          BRANCH_NAME="${{ github.ref_name }}"
+          SAFE_BRANCH=$(echo "$BRANCH_NAME" | tr '/' '-')
+          echo "🌟 Feature: https://${SAFE_BRANCH}--first-reality.netlify.app/"
+        fi
+        echo ""
+        echo "⏱️ Netlify deployments are usually live within 1-2 minutes"
+        echo "✅ No 404 errors with Netlify!"

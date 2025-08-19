@@ -55,20 +55,36 @@ export default class GameRouter {
   }
 
   gameAnimate(time) {
-    // const timeDelta = time - this.lastTime;
-    this.time++
-    // this.game.step(timeDelta);
-    if(this.time > 17){
-      if(this.game.aniDone){ 
-        this.game.frame++
-      }
-      this.time = 0
-      this.game.draw();
+    // Limit to 60fps to prevent performance issues
+    const timeDelta = time - this.lastTime;
+    if (timeDelta < 16.67) { // ~60fps limit
+      requestAnimationFrame(this.gameAnimate.bind(this));
+      return;
     }
-    // this.game.drawBackground(this.ctx);
+    
+    this.time++;
+    
+    // Reduce animation frequency to prevent spam
+    if(this.time > 30){ // Slower animation updates
+      if(this.game.aniDone){ 
+        this.game.frame++;
+      }
+      this.time = 0;
+      
+      try {
+        this.game.draw();
+      } catch (error) {
+        console.error('Game draw error:', error);
+        // Don't spam errors - stop animation on repeated errors
+        if (this.errorCount > 10) {
+          console.error('Too many errors, stopping animation');
+          return;
+        }
+        this.errorCount = (this.errorCount || 0) + 1;
+      }
+    }
+    
     this.lastTime = time;
-
-    // every call to animate requests causes another call to animate
     requestAnimationFrame(this.gameAnimate.bind(this));
   };
 
