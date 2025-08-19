@@ -12,32 +12,78 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version: '18'
         cache: 'npm'
         
+    - name: Clear npm cache
+      run: npm cache clean --force
+        
     - name: Install dependencies
-      run: npm install
+      run: |
+        npm cache clean --force
+        npm install --legacy-peer-deps
       
     - name: Build project
-      run: NODE_OPTIONS="--openssl-legacy-provider" npx webpack --mode=production
+      run: |
+        echo "🔧 Node.js version: $(node --version)"
+        echo "📦 NPM version: $(npm --version)"
+        
+        # Try the custom build script first
+        if node build-ci.js; then
+          echo "✅ Custom build script succeeded"
+        else
+          echo "⚠️ Custom build failed, trying fallback..."
+          
+          # Fallback: try without legacy provider on Node 18
+          if npx webpack --mode=production; then
+            echo "✅ Fallback build succeeded"
+          else
+            echo "❌ Both build methods failed"
+            exit 1
+          fi
+        fi
       
     - name: Create assets directory
       run: mkdir -p assets
       
-    - name: Copy assets
+    - name: Verify build output
       run: |
-        # Copy any additional assets if needed
-        echo "Assets directory created"
+        echo "🔍 Verifying build output..."
+        ls -la dist/
+        
+        # Check if required files exist
+        if [ -f "dist/bundle.js" ]; then
+          echo "✅ bundle.js exists ($(du -h dist/bundle.js | cut -f1))"
+        else
+          echo "❌ bundle.js missing!"
+          exit 1
+        fi
+        
+        if [ -f "index.html" ]; then
+          echo "✅ index.html exists"
+        else
+          echo "❌ index.html missing!"
+          exit 1
+        fi
+        
+        echo "🎉 Build verification complete!"
         
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
-        exclude_assets: 'node_modules,src,.git,.github,*.md,package*.json,webpack.config.js,.gitignore'
+        exclude_assets: '.github,node_modules,src,*.md,package*.json,webpack.config.js,.gitignore,TODOS.md'
+        
+    - name: Deploy Preview (PR)
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "✅ Build successful! Ready for deployment."
+        echo "📦 Built files:"
+        ls -la dist/

@@ -6,13 +6,19 @@
   "scripts": {
     "dev": "NODE_OPTIONS=\"--openssl-legacy-provider\" webpack --mode=development --watch",
     "build": "NODE_OPTIONS=\"--openssl-legacy-provider\" webpack --mode=production",
+    "build:legacy": "webpack --mode=production",
     "start": "npm run build && python3 -m http.server 8000",
     "serve": "python3 -m http.server 8000",
-    "test": "echo \"✅ All systems operational! Run 'npm start' to play the game.\" && exit 0"
+    "test": "echo \"✅ All systems operational! Run 'npm start' to play the game.\" && exit 0",
+    "postinstall": "echo \"Installation complete! Ready to build.\""
   },
   "keywords": ["game", "rpg", "final-fantasy", "turn-based", "javascript", "canvas"],
   "author": "Jonathan Johnson",
   "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
   "dependencies": {
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
