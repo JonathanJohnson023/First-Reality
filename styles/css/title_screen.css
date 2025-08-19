@@ -323,3 +323,17 @@
     transform: translateX(-50%) translateY(-50px);
   }
 }
+
+/* Press Enter Strobe Effect */
+@keyframes pressEnterStrobe {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px red, 0 0 20px red;
+    color: red;
+  }
+  50% {
+    opacity: 0.6;
+    text-shadow: 0 0 30px red, 0 0 40px red, 0 0 50px red;
+    color: #ff6666;
+  }
+}
