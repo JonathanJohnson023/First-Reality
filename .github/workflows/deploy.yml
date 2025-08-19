@@ -155,61 +155,49 @@ jobs:
         echo ""
         echo "🎯 Will deploy to: preview/${{ github.ref_name }}/"
         
-    - name: Deploy Feature Branch Preview
-      if: startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./deploy
-        destination_dir: preview/${{ github.ref_name }}
-        keep_files: true
-        enable_jekyll: false
-        commit_message: "Deploy preview for ${{ github.ref_name }}"
-        
-    - name: Create preview index (Feature Branch)
+    - name: Deploy Feature Branch Preview (Simple)
       if: startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
       run: |
-        # Create a simple index page for the preview
-        mkdir -p preview_index
-        cat > preview_index/index.html << 'EOF'
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>First Reality - Feature Previews</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; background: #0f3460; color: white; }
-                .preview-link { 
-                    display: block; 
-                    padding: 20px; 
-                    margin: 10px 0; 
-                    background: rgba(255,255,255,0.1); 
-                    border-radius: 8px; 
-                    text-decoration: none; 
-                    color: white;
-                    border: 2px solid rgba(255,255,255,0.2);
-                    transition: all 0.3s ease;
-                }
-                .preview-link:hover {
-                    background: rgba(255,255,255,0.2);
-                    border-color: #4CAF50;
-                    transform: translateY(-2px);
-                }
-                h1 { color: #4CAF50; }
-            </style>
-        </head>
-        <body>
-            <h1>🎮 First Reality - Feature Previews</h1>
-            <p>Available feature branch previews:</p>
-            <a href="./preview/${{ github.ref_name }}/" class="preview-link">
-                <strong>${{ github.ref_name }}</strong><br>
-                <small>Latest deployment: $(date)</small>
-            </a>
-            <p><a href="../" style="color: #4CAF50;">← Back to Production</a></p>
-        </body>
-        </html>
-        EOF
+        echo "🚀 Deploying feature branch preview using simple method..."
         
-        echo "✅ Preview index created for ${{ github.ref_name }}"
+        # Clone the repository and switch to gh-pages
+        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages-clone
+        cd gh-pages-clone
+        
+        # Check if gh-pages branch exists
+        if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+          echo "✅ gh-pages branch exists, checking it out..."
+          git checkout gh-pages
+        else
+          echo "🆕 Creating new gh-pages branch..."
+          git checkout --orphan gh-pages
+          git rm -rf . || true
+        fi
+        
+        # Create preview directory
+        mkdir -p preview/${{ github.ref_name }}
+        
+        # Copy deployment files
+        cp -r ../deploy/* preview/${{ github.ref_name }}/
+        
+        # Configure git
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Add and commit
+        git add .
+        git commit -m "🚀 Deploy preview for ${{ github.ref_name }}" || echo "No changes to commit"
+        
+        # Push
+        git push origin gh-pages
+        
+        echo "✅ Feature branch preview deployed!"
+        echo "🎮 Preview URL: https://jonathanjohnson023.github.io/First-Reality/preview/${{ github.ref_name }}/"
+        
+        # Verify deployment
+        echo "📁 Preview directory contents:"
+        ls -la preview/${{ github.ref_name }}/
+
         
     - name: Comment deployment URL (Production)
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
