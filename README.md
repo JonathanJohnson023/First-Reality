@@ -2,9 +2,9 @@
 
 A Final Fantasy inspired turn-based RPG that revisits old school combat mechanics with rogue-like elements.
 
-[![Deploy to GitHub Pages](https://github.com/username/first-reality/actions/workflows/deploy.yml/badge.svg)](https://github.com/username/first-reality/actions/workflows/deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/JonathanJohnson023/First-Reality/actions/workflows/deploy.yml/badge.svg)](https://github.com/JonathanJohnson023/First-Reality/actions/workflows/deploy.yml)
 
-## 🚀 **[Play Now - Live Demo](https://username.github.io/first-reality)**
+## 🚀 **[Play Now - Live Demo](https://jonathanjohnson023.github.io/First-Reality)**
 
 ## ✨ Features
 
@@ -80,7 +80,7 @@ npm run serve
 ### GitHub Pages (Automatic)
 1. Push to `main` branch
 2. GitHub Actions builds and deploys automatically
-3. Access at: `https://username.github.io/first-reality`
+3. Access at: `https://jonathanjohnson023.github.io/First-Reality`
 
 ### Manual Deployment
 ```bash
@@ -140,5 +140,5 @@ ISC License - Feel free to use and modify!
 
 ---
 
-**Ready to play?** → **[Launch Game](https://username.github.io/first-reality)** 🎮
+**Ready to play?** → **[Launch Game](https://jonathanjohnson023.github.io/First-Reality)** 🎮
 
