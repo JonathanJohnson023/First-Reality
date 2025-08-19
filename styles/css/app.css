@@ -1,0 +1,18 @@
+@import "index.css";
+@import "title_screen.css";
+@import "battle.css";
+@import "volume.css";
+@import "mobile.css";
+@import "animations.css";
+
+@font-face{
+  font-family: "Final Fantasy NW";
+  src: url("../finalf.ttf");
+}
+
+@font-face {
+  font-family: 'Final Fantasy';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Final Fantasy'), url('finalf.woff') format('woff');
+}

@@ -1,0 +1,339 @@
+.none{
+	display: none !important;
+}
+
+.title-screen-disappear{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: red;
+	width: 100%;
+	height: 98vh;
+	opacity: 0;
+	/* background-color: black; */
+	animation-name: disappearing;
+	 animation-delay: 0s;
+	 animation-duration: 1.5s;
+	 animation-timing-function: linear;
+	 animation-fill-mode: none;	
+	 z-index:4;
+}
+#title-screen-text-wrapper{
+	background: white;
+}
+.main-title-screen.appearing{
+	user-select: none;
+	animation-name: appearing3;
+	 animation-delay: 0s;
+	 animation-duration: 2s;
+	 animation-timing-function: linear;
+	 animation-fill-mode: none;	
+	 z-index:4;
+}
+.disappearing{
+	animation-name: disappearing;
+		animation-delay: 0s;
+		animation-duration: 2.5s;
+		animation-timing-function: linear;
+		animation-fill-mode: none;	
+		z-index:4;
+}
+.title-screen-appearing{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: red;
+	width: 100%;
+	height: 98vh;
+	animation-name: appearing3;
+	 animation-delay: 0s;
+	 animation-duration: 2s;
+	 animation-timing-function: linear;
+	 animation-fill-mode: none;	
+	 z-index:4;
+}
+.title-logo{
+	position: absolute;
+	font-size: 120px;
+	font-family: "Final Fantasy";
+	white-space: nowrap;
+	left: 50%;
+	top: 25%;
+	margin-left: -433px;
+}
+#title-screen-menu{
+	display: flex;
+	justify-content: center;
+}
+#press-start > h1{
+	font-size: 42px;
+	position: relative;
+	top: 100px;
+	color: red;
+}
+#title-center-box{
+  position: absolute;
+	margin: auto;
+	z-index: 3;
+	bottom: 250px;
+}
+
+#menu{
+	/* position: absolute; */
+	padding: 10px 0px 10px 40px;
+	width: 250px;
+	list-style: none;
+	background: radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+    background: -moz-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+	 background: -webkit-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+	 background: -o-radial-gradient(-180px 0px,circle ,#0053ad 100px,#001b85 350px,#000223);
+	border: 5px solid;
+	border-radius: 15px;
+	 -moz-border-radius: 15px;
+	 -webkit-border-radius: 15px;
+	box-sizing: border-box;     
+	 -moz-box-sizing: border-box;
+	 -webkit-box-sizing: border-box;
+	animation-name: movingUp;
+	 animation-duration: 0.5s;
+	 animation-timing-function: ease;		  	  
+}
+
+#menu li {
+	line-height:40px;
+	width: fit-content;
+	color: white;
+	font-size: 30px;
+	padding: 8px 0;
+}
+
+#menu li:hover{
+	cursor: none;
+}
+
+@keyframes movingUp{
+	0%{
+	  transform: translate(0px,3900px);
+	}
+
+	100%{
+	  transform: translate(0px,0px);
+	}
+}
+
+@keyframes movingDown{
+	0%{
+	  transform: translate(0px,-8000px);
+	}
+
+	100%{
+	  transform: translate(0px,0px);
+	}
+}
+
+@keyframes falling{
+	0%{
+		transform: translate(0px, 0px);
+	  }
+
+	30%{
+		transform: translate(0px, 91px);
+	}
+
+	56%{
+		transform: translate(0px, 109px);
+	}
+
+	74%{
+		transform: translate(0px, 123px);
+	}
+
+	86%{
+		transform: translate(0px, 133px);
+	}
+
+	98%{
+		transform: translate(0px, 140px);
+	}
+
+	10%,44%,64%,80%,92%,100%{
+	   transform: translate(0px, 145px);
+	}
+	  
+}
+
+@keyframes appearing{
+	25%{
+		text-shadow: 0px 0px 0px black;
+	}
+	
+	50%{
+		color:white;
+		text-shadow: 0px 0px 5px white, 0px 0px 10px white,0px 0px 15px white,
+		0px 0px 20px white,0px 0px 25px white;
+	}
+	
+	100%{
+		color:white;
+	}
+}
+
+@keyframes appearing2{
+	8%{
+		opacity: 0;
+	}
+	
+	100%{
+		opacity: 1;
+	}
+}
+
+@keyframes appearing3{
+	0% {
+		opacity: 0;
+	}
+	
+	100%{
+		opacity: 1;
+	}
+}
+
+@keyframes disappearing{
+	0%,40% {
+		opacity: 1;
+	}
+	
+	100%{
+		opacity: 0;
+	}
+}
+
+.selected{
+	position: absolute;
+	margin: 12px 0px 0px -75px;
+	z-index: 1;
+}
+
+.shadow{
+	display: block;
+	width: 1px; 
+	height: 1px; 
+	overflow: hidden;
+	position: absolute;
+	opacity: 0.5;
+	box-shadow: 
+	-68px 50px 2px 1px black,-67px 50px 2px 1px black,-66px 50px 2px 1px black,-65px 50px 2px 1px black,-64px 50px 2px 1px black, 
+	-63px 50px 2px 1px black,-62px 50px 2px 1px black,-61px 50px 2px 1px black,-60px 50px 2px 1px black,-59px 50px 2px 1px black,
+	-58px 50px 2px 1px black,-57px 50px 2px 1px black,-56px 50px 2px 1px black,-55px 50px 2px 1px black,-54px 50px 2px 1px black,
+	-53px 50px 2px 1px black,-52px 50px 2px 1px black,-51px 50px 2px 1px black,-50px 50px 2px 1px black,-49px 50px 2px 1px black,
+	-50px 50px 2px 1px black,-47px 50px 2px 1px black,-46px 50px 2px 1px black,-45px 50px 2px 1px black,-44px 50px 2px 1px black,
+	-43px 50px 2px 1px black,-42px 50px 2px 1px black,-41px 50px 2px 1px black,-40px 50px 2px 1px black,-39px 50px 2px 1px black,
+	-38px 50px 2px 1px black,-37px 50px 2px 1px black,-36px 50px 2px 1px black,-35px 50px 2px 1px black,-34px 50px 2px 1px black,
+	-33px 50px 2px 1px black,-32px 50px 2px 1px black,-31px 50px 2px 1px black,-30px 50px 2px 1px black,-29px 50px 2px 1px black,
+	-28px 50px 2px 1px black,-27px 50px 2px 1px black,-26px 50px 2px 1px black,-25px 50px 2px 1px black,-24px 50px 2px 1px black,
+	-23px 50px 2px 1px black,-22px 50px 2px 1px black,
+
+  	-64px 47px 2px 1px black,-63px 47px 2px 1px black,-62px 47px 2px 1px black,-61px 47px 2px 1px black,-60px 47px 2px 1px black,
+  	-59px 47px 2px 1px black,-58px 47px 2px 1px black,-57px 47px 2px 1px black,-56px 47px 2px 1px black,-55px 47px 2px 1px black,
+  	-54px 47px 2px 1px black,-53px 47px 2px 1px black,-52px 47px 2px 1px black,-51px 47px 2px 1px black,-50px 47px 2px 1px black,
+ 	-49px 47px 2px 1px black,-48px 47px 2px 1px black,-47px 47px 2px 1px black,-46px 47px 2px 1px black,-45px 47px 2px 1px black,
+  	-44px 47px 2px 1px black,-43px 47px 2px 1px black,-42px 47px 2px 1px black,-41px 47px 2px 1px black,-40px 47px 2px 1px black,
+
+  	-61px 44px 2px 1px black,-60px 44px 2px 1px black,-49px 44px 2px 1px black,-51px 44px 2px 1px black,-50px 44px 2px 1px black, 
+  
+    -64px 53px 2px 1px black,-63px 53px 2px 1px black,-62px 53px 2px 1px black,-61px 53px 2px 1px black,-60px 53px 2px 1px black, 
+  	-59px 53px 2px 1px black,-58px 53px 2px 1px black,-57px 53px 2px 1px black,-56px 53px 2px 1px black,-55px 53px 2px 1px black, 
+  	-54px 53px 2px 1px black,-53px 53px 2px 1px black,-52px 53px 2px 1px black,-51px 53px 2px 1px black,-50px 53px 2px 1px black,
+	-49px 53px 2px 1px black,-48px 53px 2px 1px black,-47px 53px 2px 1px black,-46px 53px 2px 1px black,-45px 53px 2px 1px black,
+	-44px 53px 2px 1px black,-43px 53px 2px 1px black,-42px 53px 2px 1px black,-41px 53px 2px 1px black,-40px 53px 2px 1px black
+	;
+}
+
+/* Volume Controls */
+#volume-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: white;
+  font-family: 'Final Fantasy', monospace;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+#volume-slider {
+  width: 100px;
+  height: 4px;
+  background: #333;
+  outline: none;
+  border-radius: 2px;
+}
+
+#volume-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #4CAF50;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+#volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #4CAF50;
+  cursor: pointer;
+  border-radius: 50%;
+  border: none;
+}
+
+#mute-toggle {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  color: white;
+}
+
+#mute-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#volume-display {
+  min-width: 35px;
+  text-align: right;
+}
+
+/* Damage animation */
+@keyframes damageFloat {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-50px);
+  }
+}
+
+/* Press Enter Strobe Effect */
+@keyframes pressEnterStrobe {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px red, 0 0 20px red;
+    color: red;
+  }
+  50% {
+    opacity: 0.6;
+    text-shadow: 0 0 30px red, 0 0 40px red, 0 0 50px red;
+    color: #ff6666;
+  }
+}
