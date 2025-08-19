@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main, master, cursor/improve-app-fix-combat-add-volume-and-mute-e839 ]
+    branches: [ main, master, 'feature/**', 'cursor/**' ]
   pull_request:
     branches: [ main, master ]
 
@@ -76,21 +76,47 @@ jobs:
         
         echo "🎉 Build verification complete!"
         
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/cursor/improve-app-fix-combat-add-volume-and-mute-e839'
+    - name: Deploy to GitHub Pages (Production)
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
         exclude_assets: '.github,node_modules,src,*.md,package*.json,webpack.config.js,.gitignore,TODOS.md'
         
-    - name: Comment deployment URL
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/cursor/improve-app-fix-combat-add-volume-and-mute-e839')
+    - name: Deploy Feature Branch Preview
+      if: startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+        destination_dir: preview/${{ github.ref_name }}
+        exclude_assets: '.github,node_modules,src,*.md,package*.json,webpack.config.js,.gitignore,TODOS.md'
+        
+    - name: Comment deployment URL (Production)
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
-        echo "🚀 Deployment completed!"
-        echo "🎮 Game URL: https://jonathanjohnson023.github.io/First-Reality"
+        echo "🚀 Production Deployment completed!"
+        echo "🎮 Live Game URL: https://jonathanjohnson023.github.io/First-Reality"
         echo "📊 Build artifacts:"
         ls -la dist/
+        
+    - name: Comment deployment URL (Feature Branch)
+      if: github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/'))
+      run: |
+        echo "🚀 Feature Branch Deployment completed!"
+        echo "🎮 Preview URL: https://jonathanjohnson023.github.io/First-Reality/preview/${{ github.ref_name }}/"
+        echo "📊 Build artifacts:"
+        ls -la dist/
+        echo ""
+        echo "🔍 TESTING INSTRUCTIONS:"
+        echo "1. Visit the preview URL above"
+        echo "2. Test all new features"
+        echo "3. Verify mobile responsiveness"
+        echo "4. Check audio controls work"
+        echo "5. Test save/load functionality"
+        echo ""
+        echo "✅ If everything works, merge to deploy to production!"
         
     - name: Deploy Preview (PR)
       if: github.event_name == 'pull_request'
@@ -117,6 +143,9 @@ jobs:
           const bundleSize = fs.statSync('dist/bundle.js').size;
           const bundleSizeKB = Math.round(bundleSize / 1024 * 10) / 10;
           
+          const branchName = context.payload.pull_request.head.ref;
+          const previewUrl = `https://jonathanjohnson023.github.io/First-Reality/preview/${branchName}/`;
+          
           const comment = `## 🚀 Deployment Preview Ready!
           
           ### ✅ Build Status: **SUCCESS**
@@ -124,8 +153,19 @@ jobs:
           - **Build Time**: ${new Date().toLocaleString()}
           - **Status**: Ready for deployment 🎯
           
+          ### 🎮 **Test Your Changes**
+          **Feature Branch Preview**: [${previewUrl}](${previewUrl})
+          
+          🔍 **Testing Checklist**:
+          - [ ] Game loads and starts correctly
+          - [ ] Audio controls work (volume slider, mute button)
+          - [ ] Combat system functions properly
+          - [ ] Save/load system works
+          - [ ] Mobile touch controls responsive
+          - [ ] All animations smooth
+          
           ### 🎮 **When Merged**
-          This PR will deploy to: **https://jonathanjohnson023.github.io/First-Reality**
+          Production deployment: **https://jonathanjohnson023.github.io/First-Reality**
           
           ### 🌟 **New Features Included**
           - 🔊 Professional audio system (15+ sound effects)
@@ -141,7 +181,7 @@ jobs:
           - **Mobile Ready**: Touch controls implemented
           - **Cross-Browser**: Compatible with modern browsers
           
-          **Merge this PR to deploy the world-class gaming experience!** 🚀`;
+          **Test the preview, then merge to deploy to production!** 🚀`;
           
           github.rest.issues.createComment({
             issue_number: context.issue.number,
