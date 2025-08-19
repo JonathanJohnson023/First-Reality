@@ -2,46 +2,12 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main, master, 'feature/**', 'cursor/**' ]
+    branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  delete:
-    branches: [ 'feature/**', 'cursor/**' ]
 
 jobs:
-  cleanup-deleted-branch:
-    if: github.event_name == 'delete'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-    - name: Checkout gh-pages branch
-      uses: actions/checkout@v4
-      with:
-        ref: gh-pages
-        token: ${{ secrets.GITHUB_TOKEN }}
-        
-    - name: Cleanup deleted feature branch preview
-      run: |
-        echo "🗑️ Cleaning up preview for deleted branch: ${{ github.event.ref }}"
-        
-        # Remove the preview directory
-        if [ -d "preview/${{ github.event.ref }}" ]; then
-          rm -rf "preview/${{ github.event.ref }}"
-          echo "✅ Removed preview/${{ github.event.ref }}/"
-          
-          # Commit the cleanup
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "🗑️ Cleanup preview for deleted branch ${{ github.event.ref }}" || echo "Nothing to commit"
-          git push
-        else
-          echo "⚠️ Preview directory not found: preview/${{ github.event.ref }}"
-        fi
-        
   build-and-deploy:
-    if: github.event_name != 'delete'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -59,235 +25,46 @@ jobs:
         node-version: '18'
         cache: 'npm'
         
-    - name: Clear npm cache
-      run: npm cache clean --force
-        
     - name: Install dependencies
-      run: |
-        npm cache clean --force
-        npm install --legacy-peer-deps
+      run: npm install --legacy-peer-deps
       
     - name: Build project
-      run: |
-        echo "🔧 Node.js version: $(node --version)"
-        echo "📦 NPM version: $(npm --version)"
-        
-        # Try the custom build script first
-        if node build-ci.js; then
-          echo "✅ Custom build script succeeded"
-        else
-          echo "⚠️ Custom build failed, trying fallback..."
-          
-          # Fallback: try without legacy provider on Node 18
-          if npx webpack --mode=production; then
-            echo "✅ Fallback build succeeded"
-          else
-            echo "❌ Both build methods failed"
-            exit 1
-          fi
-        fi
+      run: NODE_OPTIONS="--openssl-legacy-provider" npm run build
       
-    - name: Create assets directory
-      run: mkdir -p assets
-      
-    - name: Verify build output
+    - name: Verify build
       run: |
-        echo "🔍 Verifying build output..."
+        echo "✅ Build completed"
         ls -la dist/
+        echo "Bundle size: $(du -h dist/bundle.js | cut -f1)"
         
-        # Check if required files exist
-        if [ -f "dist/bundle.js" ]; then
-          echo "✅ bundle.js exists ($(du -h dist/bundle.js | cut -f1))"
-        else
-          echo "❌ bundle.js missing!"
-          exit 1
-        fi
-        
-        if [ -f "index.html" ]; then
-          echo "✅ index.html exists"
-        else
-          echo "❌ index.html missing!"
-          exit 1
-        fi
-        
-        echo "🎉 Build verification complete!"
-        
-    - name: Prepare deployment files
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
-      run: |
-        # Create deployment directory
-        mkdir -p deploy
-        
-        # Copy necessary files for deployment
-        cp index.html deploy/
-        cp -r dist/ deploy/
-        cp -r styles/ deploy/
-        cp -r assets/ deploy/ || echo "Assets directory not found, skipping"
-        cp *.png deploy/ || echo "PNG files not found, skipping"
-        cp first_reality_ff.png deploy/ || echo "Favicon not found, skipping"
-        
-        # Create .nojekyll to disable Jekyll processing
-        touch deploy/.nojekyll
-        
-        echo "✅ Deployment files prepared"
-        ls -la deploy/
-        
-    - name: Deploy to GitHub Pages (Production)
+    - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./deploy
+        publish_dir: ./
+        exclude_assets: '.github,node_modules,src,*.md,package*.json,webpack.config.js,.gitignore,TODOS.md'
         force_orphan: true
         enable_jekyll: false
         
-    - name: Debug feature branch deployment
-      if: startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
-      run: |
-        echo "🔍 Debug Info:"
-        echo "Branch: ${{ github.ref }}"
-        echo "Branch name: ${{ github.ref_name }}"
-        echo "Event: ${{ github.event_name }}"
-        echo "Repository: ${{ github.repository }}"
-        echo ""
-        echo "📁 Deploy directory contents:"
-        ls -la deploy/
-        echo ""
-        echo "🎯 Will deploy to: preview/${{ github.ref_name }}/"
-        
-    - name: Deploy Feature Branch Preview (Simple)
-      if: startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
-      run: |
-        echo "🚀 Deploying feature branch preview using simple method..."
-        
-        # Clone the repository and switch to gh-pages
-        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages-clone
-        cd gh-pages-clone
-        
-        # Check if gh-pages branch exists
-        if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
-          echo "✅ gh-pages branch exists, checking it out..."
-          git checkout gh-pages
-        else
-          echo "🆕 Creating new gh-pages branch..."
-          git checkout --orphan gh-pages
-          git rm -rf . || true
-        fi
-        
-        # Create preview directory
-        mkdir -p preview/${{ github.ref_name }}
-        
-        # Copy deployment files
-        cp -r ../deploy/* preview/${{ github.ref_name }}/
-        
-        # Configure git
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        
-        # Add and commit
-        git add .
-        git commit -m "🚀 Deploy preview for ${{ github.ref_name }}" || echo "No changes to commit"
-        
-        # Push
-        git push origin gh-pages
-        
-        echo "✅ Feature branch preview deployed!"
-        echo "🎮 Preview URL: https://jonathanjohnson023.github.io/First-Reality/preview/${{ github.ref_name }}/"
-        
-        # Verify deployment
-        echo "📁 Preview directory contents:"
-        ls -la preview/${{ github.ref_name }}/
-
-        
-    - name: Comment deployment URL (Production)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      run: |
-        echo "🚀 Production Deployment completed!"
-        echo "🎮 Live Game URL: https://jonathanjohnson023.github.io/First-Reality"
-        echo "📊 Build artifacts:"
-        ls -la dist/
-        
-    - name: Comment deployment URL (Feature Branch)
-      if: github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/'))
-      run: |
-        echo "🚀 Feature Branch Deployment completed!"
-        echo "🎮 Preview URL: https://jonathanjohnson023.github.io/First-Reality/preview/${{ github.ref_name }}/"
-        echo "📊 Build artifacts:"
-        ls -la dist/
-        echo ""
-        echo "🔍 TESTING INSTRUCTIONS:"
-        echo "1. Visit the preview URL above"
-        echo "2. Test all new features"
-        echo "3. Verify mobile responsiveness"
-        echo "4. Check audio controls work"
-        echo "5. Test save/load functionality"
-        echo ""
-        echo "✅ If everything works, merge to deploy to production!"
-        
-    - name: Deploy Preview (PR)
-      if: github.event_name == 'pull_request'
-      run: |
-        echo "✅ Build successful! Ready for deployment."
-        echo "📦 Built files:"
-        ls -la dist/
-        echo ""
-        echo "🚀 DEPLOYMENT PREVIEW:"
-        echo "When this PR is merged, the game will be deployed to:"
-        echo "🎮 https://jonathanjohnson023.github.io/First-Reality"
-        echo ""
-        echo "📊 Bundle Analysis:"
-        echo "- Bundle Size: $(du -h dist/bundle.js | cut -f1)"
-        echo "- Total Assets: $(ls dist/ | wc -l) files"
-        echo "- Ready for production: ✅"
-        
-    - name: Comment PR with deployment info
+    - name: Comment on PR
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v7
       with:
         script: |
-          const fs = require('fs');
-          const bundleSize = fs.statSync('dist/bundle.js').size;
-          const bundleSizeKB = Math.round(bundleSize / 1024 * 10) / 10;
+          const comment = `## ✅ Build Successful!
           
-          const branchName = context.payload.pull_request.head.ref;
-          const previewUrl = `https://jonathanjohnson023.github.io/First-Reality/preview/${branchName}/`;
+          **Status**: Ready for deployment
+          **When merged**: Will deploy to https://jonathanjohnson023.github.io/First-Reality/
           
-          const comment = `## 🚀 Deployment Preview Ready!
+          ### 🔧 Fixes Included:
+          - Fixed JavaScript errors (processTurn.bind issue)
+          - Volume controls appear before press enter
+          - Auto-mute title screen working
+          - Press enter strobe effect added
+          - Enter key functionality restored
           
-          ### ✅ Build Status: **SUCCESS**
-          - **Bundle Size**: ${bundleSizeKB}KB (optimized)
-          - **Build Time**: ${new Date().toLocaleString()}
-          - **Status**: Ready for deployment 🎯
-          
-          ### 🎮 **Test Your Changes**
-          **Feature Branch Preview**: [${previewUrl}](${previewUrl})
-          
-          🔍 **Testing Checklist**:
-          - [ ] Game loads and starts correctly
-          - [ ] Audio controls work (volume slider, mute button)
-          - [ ] Combat system functions properly
-          - [ ] Save/load system works
-          - [ ] Mobile touch controls responsive
-          - [ ] All animations smooth
-          
-          ### 🎮 **When Merged**
-          Production deployment: **https://jonathanjohnson023.github.io/First-Reality**
-          
-          ### 🌟 **New Features Included**
-          - 🔊 Professional audio system (15+ sound effects)
-          - 💾 Advanced save system with auto-save
-          - 📱 Mobile touch controls
-          - ⚔️ 99-level progression system
-          - 🎨 Premium animations and effects
-          - 🔇 Auto-mute title screen
-          - 🎚️ Volume slider controls
-          
-          ### 📊 **Performance**
-          - **Load Time**: Optimized for fast loading
-          - **Mobile Ready**: Touch controls implemented
-          - **Cross-Browser**: Compatible with modern browsers
-          
-          **Test the preview, then merge to deploy to production!** 🚀`;
+          **Merge to deploy the fixes!** 🚀`;
           
           github.rest.issues.createComment({
             issue_number: context.issue.number,
