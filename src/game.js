@@ -3,7 +3,7 @@ import Monster from "./monster"
 import Menu from "./menu"
 export default class Game {
   constructor(ctx){
-    this.party = []
+    this.party = [];
     this.enemies = [];
     this.wave = 0;
     this.currentChar = null;
@@ -13,9 +13,14 @@ export default class Game {
     this.aniDone = false;
     this.partyMenu = new Menu("#party-moves li", "party-moves");
     this.wave = 0;
+    this.battleState = 'player-turn'; // 'player-turn', 'enemy-turn', 'victory', 'defeat'
+    this.turnQueue = [];
+    this.currentTurn = 0;
+    this.actionInProgress = false;
 
     this.draw = this.draw.bind(this);
     this.charIndexIncrease = this.charIndexIncrease.bind(this);
+    this.processTurn = this.processTurn.bind(this);
   }
 
   draw(){
@@ -88,16 +93,156 @@ export default class Game {
   }
 
   onSelect(selection){
+    if (this.actionInProgress || this.battleState !== 'player-turn') {
+      return;
+    }
+    
+    this.actionInProgress = true;
+    const selectedAction = selection.innerText;
+    
+    if (selectedAction === 'Attack') {
+      this.performAttack();
+    } else if (selectedAction === 'Defend') {
+      this.performDefend();
+    }
+  }
+  
+  performAttack() {
+    // Find alive enemies
+    const aliveEnemies = this.enemies.filter(enemy => enemy.isAlive());
+    if (aliveEnemies.length === 0) {
+      this.checkBattleEnd();
+      return;
+    }
+    
+    // Attack random alive enemy
+    const targetEnemy = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+    
     this.currentChar.back = false;
     this.currentChar.forward = true;
-    this.currentChar.attack(this.enemies[Math.floor(Math.random() * this.enemies.length)]);
-    if(this.currentCharIndex > 0){
-      this.party[this.currentCharIndex - 1].back = true
-      this.party[this.currentCharIndex - 1].forward = false;
-    } else {
-      this.party[3].back = true;
-      this.party[3].forward = false;
+    this.currentChar.attack(targetEnemy);
+    
+    // After attack animation, proceed to next turn
+    setTimeout(() => {
+      this.currentChar.back = true;
+      this.currentChar.forward = false;
+      this.actionInProgress = false;
+      this.nextTurn();
+    }, 1000);
+  }
+  
+  performDefend() {
+    console.log(`${this.currentChar.job} is defending!`);
+    // Defending reduces incoming damage by 50% for this turn
+    this.currentChar.defending = true;
+    
+    setTimeout(() => {
+      this.actionInProgress = false;
+      this.nextTurn();
+    }, 500);
+  }
+  
+  nextTurn() {
+    if (this.checkBattleEnd()) {
+      return;
     }
+    
+    this.charIndexIncrease();
+    
+    // Check if all party members have acted
+    if (this.currentCharIndex === 0) {
+      this.battleState = 'enemy-turn';
+      this.enemyTurn();
+    }
+  }
+  
+  enemyTurn() {
+    const aliveEnemies = this.enemies.filter(enemy => enemy.isAlive());
+    const aliveParty = this.party.filter(char => !char.KO);
+    
+    if (aliveEnemies.length === 0 || aliveParty.length === 0) {
+      this.checkBattleEnd();
+      return;
+    }
+    
+    let enemyIndex = 0;
+    const enemyAttackInterval = setInterval(() => {
+      if (enemyIndex >= aliveEnemies.length) {
+        clearInterval(enemyAttackInterval);
+        // Reset defending status
+        this.party.forEach(char => char.defending = false);
+        this.battleState = 'player-turn';
+        return;
+      }
+      
+      const enemy = aliveEnemies[enemyIndex];
+      const target = aliveParty[Math.floor(Math.random() * aliveParty.length)];
+      
+      if (target && !target.KO) {
+        let damage = enemy.attack(target);
+        if (target.defending) {
+          damage = Math.floor(damage * 0.5);
+          target.health += Math.floor(damage * 0.5); // Restore half damage
+          console.log(`${target.job} defended and reduced damage!`);
+        }
+      }
+      
+      enemyIndex++;
+    }, 1000);
+  }
+  
+  checkBattleEnd() {
+    const aliveEnemies = this.enemies.filter(enemy => enemy.isAlive());
+    const aliveParty = this.party.filter(char => !char.KO && char.health > 0);
+    
+    if (aliveEnemies.length === 0) {
+      this.battleState = 'victory';
+      console.log('Victory! All enemies defeated!');
+      this.showVictoryScreen();
+      return true;
+    }
+    
+    if (aliveParty.length === 0) {
+      this.battleState = 'defeat';
+      console.log('Defeat! All party members have fallen!');
+      this.showDefeatScreen();
+      return true;
+    }
+    
+    return false;
+  }
+  
+  showVictoryScreen() {
+    // Add victory screen logic
+    setTimeout(() => {
+      alert('Victory! You defeated all enemies!');
+      this.resetBattle();
+    }, 1000);
+  }
+  
+  showDefeatScreen() {
+    // Add defeat screen logic
+    setTimeout(() => {
+      alert('Defeat! Game Over!');
+      this.resetBattle();
+    }, 1000);
+  }
+  
+  resetBattle() {
+    // Reset party health
+    this.party.forEach(char => {
+      char.health = char.maxHealth;
+      char.KO = false;
+      char.defending = false;
+    });
+    
+    // Generate new enemies
+    this.enemies = [];
+    this.addEnemy();
+    
+    this.currentCharIndex = 0;
+    this.battleState = 'player-turn';
+    this.actionInProgress = false;
   }
 
   addEnemy(){
@@ -110,7 +255,10 @@ export default class Game {
   }
 
   charIndexIncrease(){
-    this.currentCharIndex >= 3 ? this.currentCharIndex = 0 : this.currentCharIndex++
+    // Skip KO'd characters
+    do {
+      this.currentCharIndex >= 3 ? this.currentCharIndex = 0 : this.currentCharIndex++;
+    } while (this.party[this.currentCharIndex] && this.party[this.currentCharIndex].KO);
   }
   
 

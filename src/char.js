@@ -68,8 +68,49 @@ export default class Character {
   // }
 
   attack(monster){
-    console.log(monster);
-    monster.health -= 25;
+    if (monster.health <= 0) {
+      console.log('Monster is already dead!');
+      return;
+    }
+    
+    const damage = Math.floor(Math.random() * 30) + 15; // 15-45 damage
+    monster.health -= damage;
+    
+    if (monster.health <= 0) {
+      monster.health = 0;
+      monster.KO = true;
+      console.log(`Monster defeated! Dealt ${damage} damage.`);
+    } else {
+      console.log(`Dealt ${damage} damage to monster. Monster health: ${monster.health}`);
+    }
+    
+    // Add visual feedback
+    this.showDamage(damage);
+  }
+  
+  showDamage(damage) {
+    // Create damage text element
+    const damageText = document.createElement('div');
+    damageText.textContent = `-${damage}`;
+    damageText.style.position = 'absolute';
+    damageText.style.color = '#ff4444';
+    damageText.style.fontSize = '24px';
+    damageText.style.fontWeight = 'bold';
+    damageText.style.zIndex = '1000';
+    damageText.style.pointerEvents = 'none';
+    damageText.style.left = '50%';
+    damageText.style.top = '30%';
+    damageText.style.transform = 'translateX(-50%)';
+    damageText.style.animation = 'damageFloat 1.5s ease-out forwards';
+    
+    document.body.appendChild(damageText);
+    
+    // Remove after animation
+    setTimeout(() => {
+      if (damageText.parentNode) {
+        damageText.parentNode.removeChild(damageText);
+      }
+    }, 1500);
   }
 
   spriteHeight(int){

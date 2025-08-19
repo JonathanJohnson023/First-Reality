@@ -18,9 +18,17 @@
       </div>
   
       <div id="title-screen-menu" class="none">
-          <audio contenteditable="false" id="title-audio" loop="true" preload="auto">
+          <audio contenteditable="false" id="title-audio" loop="true" preload="auto" muted>
             <source src="./assets/FinalFantasyPrelude.mp3">
           </audio>
+          
+          <!-- Volume Controls -->
+          <div id="volume-controls">
+            <label for="volume-slider">Volume:</label>
+            <input type="range" id="volume-slider" min="0" max="100" value="30" />
+            <span id="volume-display">30%</span>
+            <button id="mute-toggle">🔊</button>
+          </div>
           <!-- <iframe width="0" height="0" scrolling="no" frameborder="no" 
           src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/18084454&amp;auto_play=true&amp;hide_related=false&amp;visual=true">
           </iframe> -->
