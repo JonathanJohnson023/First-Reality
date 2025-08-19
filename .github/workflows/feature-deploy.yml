@@ -1,0 +1,198 @@
+name: Feature Branch Deployment
+
+on:
+  push:
+    branches: 
+      - 'feature/**'
+      - 'fix/**'
+      - 'hotfix/**'
+
+jobs:
+  deploy-feature:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+      pull-requests: write
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm cache clean --force
+        npm install --legacy-peer-deps
+        
+    - name: Run tests
+      run: npm test
+      
+    - name: Build project
+      run: |
+        echo "🔨 Building feature branch: ${{ github.ref_name }}"
+        NODE_OPTIONS="--openssl-legacy-provider" npm run build
+        
+    - name: Verify build output
+      run: |
+        if [ ! -f "dist/bundle.js" ]; then
+          echo "❌ Build failed - bundle.js not found"
+          exit 1
+        fi
+        
+        echo "✅ Build successful"
+        echo "Bundle size: $(du -h dist/bundle.js | cut -f1)"
+        
+    - name: Prepare feature deployment
+      run: |
+        # Create clean deployment directory
+        rm -rf feature-deploy
+        mkdir -p feature-deploy
+        
+        # Copy all necessary files
+        cp index.html feature-deploy/
+        cp -r dist/ feature-deploy/
+        cp -r styles/ feature-deploy/
+        cp -r assets/ feature-deploy/ || echo "Assets not found"
+        cp *.png feature-deploy/ || echo "PNG files not found"
+        
+        # Create .nojekyll
+        touch feature-deploy/.nojekyll
+        
+        # Update paths for subdirectory deployment
+        sed -i 's|src="./dist/|src="./dist/|g' feature-deploy/index.html
+        sed -i 's|href="./styles/|href="./styles/|g' feature-deploy/index.html
+        
+        echo "📁 Feature deployment prepared:"
+        ls -la feature-deploy/
+        
+    - name: Deploy to feature subdomain
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./feature-deploy
+        destination_dir: features/${{ github.ref_name }}
+        keep_files: true
+        enable_jekyll: false
+        commit_message: "🚀 Deploy feature: ${{ github.ref_name }}"
+        
+    - name: Wait for deployment
+      run: sleep 60
+      
+    - name: Verify deployment
+      run: |
+        FEATURE_URL="https://jonathanjohnson023.github.io/First-Reality/features/${{ github.ref_name }}/"
+        
+        echo "🔍 Testing deployment at: $FEATURE_URL"
+        
+        # Test if the page loads
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$FEATURE_URL")
+        
+        if [ "$HTTP_CODE" = "200" ]; then
+          echo "✅ Feature deployment successful!"
+          echo "🎮 Feature URL: $FEATURE_URL"
+        else
+          echo "❌ Feature deployment failed - HTTP $HTTP_CODE"
+          
+          # Try again after more time
+          echo "⏱️ Waiting additional time for GitHub Pages..."
+          sleep 120
+          
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$FEATURE_URL")
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Feature deployment successful after retry!"
+            echo "🎮 Feature URL: $FEATURE_URL"
+          else
+            echo "❌ Feature deployment still failing - HTTP $HTTP_CODE"
+            exit 1
+          fi
+        fi
+        
+    - name: Create feature index
+      run: |
+        # Create an index page for all features
+        mkdir -p features-index
+        cat > features-index/index.html << EOF
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>First Reality - Feature Previews</title>
+            <style>
+                body { 
+                    font-family: 'Arial', sans-serif; 
+                    margin: 0; 
+                    padding: 40px; 
+                    background: linear-gradient(135deg, #0f3460, #16537e); 
+                    color: white; 
+                    min-height: 100vh;
+                }
+                .container { max-width: 800px; margin: 0 auto; }
+                h1 { color: #4CAF50; text-align: center; margin-bottom: 40px; }
+                .feature-card { 
+                    background: rgba(255,255,255,0.1); 
+                    border: 2px solid rgba(255,255,255,0.2);
+                    border-radius: 12px; 
+                    padding: 20px; 
+                    margin: 20px 0;
+                    transition: all 0.3s ease;
+                }
+                .feature-card:hover {
+                    background: rgba(255,255,255,0.2);
+                    border-color: #4CAF50;
+                    transform: translateY(-2px);
+                }
+                .feature-link { 
+                    color: #4CAF50; 
+                    text-decoration: none; 
+                    font-size: 18px; 
+                    font-weight: bold;
+                    display: block;
+                    margin-bottom: 10px;
+                }
+                .feature-desc { opacity: 0.8; margin: 10px 0; }
+                .back-link { 
+                    text-align: center; 
+                    margin-top: 40px; 
+                }
+                .back-link a { 
+                    color: #4CAF50; 
+                    text-decoration: none; 
+                    font-size: 16px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🎮 First Reality - Feature Previews</h1>
+                
+                <div class="feature-card">
+                    <a href="./${{ github.ref_name }}/" class="feature-link">${{ github.ref_name }}</a>
+                    <div class="feature-desc">Latest feature branch deployment</div>
+                    <div class="feature-desc">Deployed: $(date)</div>
+                    <div class="feature-desc">Commit: ${{ github.sha }}</div>
+                </div>
+                
+                <div class="back-link">
+                    <a href="../">← Back to Production</a>
+                </div>
+            </div>
+        </body>
+        </html>
+        EOF
+        
+    - name: Deploy feature index
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./features-index
+        destination_dir: features
+        keep_files: true
+        enable_jekyll: false

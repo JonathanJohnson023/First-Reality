@@ -10,6 +10,10 @@
     "start": "npm run build && python3 -m http.server 8000",
     "serve": "python3 -m http.server 8000",
     "test": "echo \"✅ All systems operational! Run 'npm start' to play the game.\" && exit 0",
+    "test:unit": "jest tests/unit/",
+    "test:e2e": "jest tests/e2e/",
+    "test:integration": "jest tests/integration/",
+    "test:all": "npm run test:unit && npm run test:e2e && npm run test:integration",
     "postinstall": "echo \"Installation complete! Ready to build.\""
   },
   "keywords": ["game", "rpg", "final-fantasy", "turn-based", "javascript", "canvas"],
@@ -22,6 +26,21 @@
   "dependencies": {
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "puppeteer": "^21.5.0",
+    "@testing-library/jest-dom": "^6.1.4"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "testMatch": ["<rootDir>/tests/**/*.test.js"],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ]
   },
   "repository": {
     "type": "git",
