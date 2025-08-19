@@ -1,0 +1,70 @@
+name: Feature Branch Deployment (Surge)
+
+on:
+  push:
+    branches: 
+      - 'feature/**'
+      - 'fix/**'
+
+jobs:
+  deploy-feature:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
+      
+    - name: Install Surge
+      run: npm install -g surge
+        
+    - name: Build project
+      run: NODE_OPTIONS="--openssl-legacy-provider" npm run build
+      
+    - name: Prepare deployment
+      run: |
+        mkdir -p deploy
+        cp index.html deploy/
+        cp -r dist/ deploy/
+        cp -r styles/ deploy/
+        cp -r assets/ deploy/ || echo "Assets not found"
+        cp *.png deploy/ || echo "PNG files not found"
+        
+    - name: Deploy to Surge
+      run: |
+        # Create unique subdomain for this branch
+        BRANCH_NAME="${{ github.ref_name }}"
+        SAFE_BRANCH=$(echo "$BRANCH_NAME" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
+        SURGE_DOMAIN="first-reality-${SAFE_BRANCH}.surge.sh"
+        
+        echo "🚀 Deploying to: https://$SURGE_DOMAIN"
+        
+        # Deploy using Surge
+        cd deploy
+        echo "$SURGE_DOMAIN" > CNAME
+        surge . "$SURGE_DOMAIN" --token ${{ secrets.SURGE_TOKEN }}
+        
+        echo "✅ Feature deployed to: https://$SURGE_DOMAIN"
+        
+    - name: Verify deployment
+      run: |
+        BRANCH_NAME="${{ github.ref_name }}"
+        SAFE_BRANCH=$(echo "$BRANCH_NAME" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
+        SURGE_DOMAIN="first-reality-${SAFE_BRANCH}.surge.sh"
+        
+        sleep 30
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://$SURGE_DOMAIN")
+        
+        if [ "$HTTP_CODE" = "200" ]; then
+          echo "✅ Feature deployment verified!"
+          echo "🎮 Test URL: https://$SURGE_DOMAIN"
+        else
+          echo "❌ Feature deployment verification failed - HTTP $HTTP_CODE"
+        fi

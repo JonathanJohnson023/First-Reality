@@ -1,0 +1,90 @@
+name: Simple Feature Deployment
+
+on:
+  push:
+    branches: 
+      - 'feature/**'
+      - 'fix/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
+        
+    - name: Build project
+      run: NODE_OPTIONS="--openssl-legacy-provider" npm run build
+      
+    - name: Create feature deployment
+      run: |
+        # Create deployment files
+        mkdir -p feature-site
+        cp index.html feature-site/
+        cp -r dist/ feature-site/
+        cp -r styles/ feature-site/
+        cp -r assets/ feature-site/ || echo "Assets not found"
+        cp *.png feature-site/ || echo "PNG files not found"
+        touch feature-site/.nojekyll
+        
+        # Add feature branch identifier
+        sed -i 's|<title>First Reality</title>|<title>First Reality - ${{ github.ref_name }}</title>|g' feature-site/index.html
+        
+        # Add branch banner
+        sed -i 's|<body>|<body><div style="position:fixed;top:0;left:0;width:100%;background:#4CAF50;color:black;text-align:center;padding:5px;z-index:10000;font-weight:bold;">🌟 FEATURE: ${{ github.ref_name }} 🌟</div>|g' feature-site/index.html
+        
+        echo "📁 Feature site prepared:"
+        ls -la feature-site/
+        
+    - name: Deploy feature branch
+      run: |
+        # Configure git
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Create feature deployment branch
+        BRANCH_NAME="${{ github.ref_name }}"
+        DEPLOY_BRANCH="deploy-$(echo "$BRANCH_NAME" | tr '/' '-')"
+        
+        git checkout --orphan "$DEPLOY_BRANCH"
+        git rm -rf . || true
+        
+        # Copy feature site files
+        cp -r feature-site/* .
+        
+        # Commit and push
+        git add .
+        git commit -m "🚀 Deploy feature: ${{ github.ref_name }}"
+        git push origin "$DEPLOY_BRANCH" --force
+        
+        echo "✅ Feature deployed to branch: $DEPLOY_BRANCH"
+        
+    - name: Output deployment info
+      run: |
+        BRANCH_NAME="${{ github.ref_name }}"
+        DEPLOY_BRANCH="deploy-$(echo "$BRANCH_NAME" | tr '/' '-')"
+        
+        echo "🎮 FEATURE DEPLOYMENT COMPLETE!"
+        echo ""
+        echo "📍 Branch: ${{ github.ref_name }}"
+        echo "📍 Deploy Branch: $DEPLOY_BRANCH"
+        echo "📍 Repository: https://github.com/${{ github.repository }}/tree/$DEPLOY_BRANCH"
+        echo ""
+        echo "🔧 To test this feature:"
+        echo "1. Clone the repository"
+        echo "2. Switch to branch: $DEPLOY_BRANCH"
+        echo "3. Serve the files locally"
+        echo ""
+        echo "⚠️ GitHub Pages subdirectories have limitations"
+        echo "✅ Feature branch is ready for testing via repository"
