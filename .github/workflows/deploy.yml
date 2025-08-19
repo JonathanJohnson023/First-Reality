@@ -10,7 +10,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      pages: write
+      id-token: write
       pull-requests: write
     
     steps:
@@ -76,22 +78,53 @@ jobs:
         
         echo "🎉 Build verification complete!"
         
+    - name: Prepare deployment files
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
+      run: |
+        # Create deployment directory
+        mkdir -p deploy
+        
+        # Copy necessary files for deployment
+        cp index.html deploy/
+        cp -r dist/ deploy/
+        cp -r styles/ deploy/
+        cp -r assets/ deploy/ || echo "Assets directory not found, skipping"
+        cp *.png deploy/ || echo "PNG files not found, skipping"
+        cp first_reality_ff.png deploy/ || echo "Favicon not found, skipping"
+        
+        # Create .nojekyll to disable Jekyll processing
+        touch deploy/.nojekyll
+        
+        echo "✅ Deployment files prepared"
+        ls -la deploy/
+        
     - name: Deploy to GitHub Pages (Production)
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
-        exclude_assets: '.github,node_modules,src,*.md,package*.json,webpack.config.js,.gitignore,TODOS.md'
+        publish_dir: ./deploy
+        force_orphan: true
+        enable_jekyll: false
         
     - name: Deploy Feature Branch Preview
+      if: startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
+      run: |
+        # Create feature branch directory structure
+        mkdir -p feature_deploy/preview/${{ github.ref_name }}
+        cp -r deploy/* feature_deploy/preview/${{ github.ref_name }}/
+        
+        # Deploy to feature branch location
+        echo "Deploying feature branch to preview/${{ github.ref_name }}/"
+        
+    - name: Deploy Feature Branch to Pages
       if: startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/cursor/')
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
-        destination_dir: preview/${{ github.ref_name }}
-        exclude_assets: '.github,node_modules,src,*.md,package*.json,webpack.config.js,.gitignore,TODOS.md'
+        publish_dir: ./feature_deploy
+        keep_files: true
+        enable_jekyll: false
         
     - name: Comment deployment URL (Production)
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
