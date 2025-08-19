@@ -20,7 +20,6 @@ export default class Game {
 
     this.draw = this.draw.bind(this);
     this.charIndexIncrease = this.charIndexIncrease.bind(this);
-    this.processTurn = this.processTurn.bind(this);
   }
 
   draw(){
